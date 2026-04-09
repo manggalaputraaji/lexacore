@@ -1,0 +1,26 @@
+body {
+    background-color: #d0ddee;
+    font-family: "Lexend", sans-serif;
+}
+
+.navbar {
+    background-color: #0d6efd !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-control-lg {
+    border-radius: 10px 0 0 10px;
+    border: 2px solid #dee2e6;
+}
+
+.btn-primary {
+    border-radius: 0 10px 10px 0;
+    font-weight: 600;
+}
+
+iframe {
+    border-radius: 10px;
+    border: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');

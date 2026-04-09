@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Daftar Siswa | E-Tertib</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+        * {
+            font-family: "Lexend", sans-serif;
+        }
+        body { background: #f0f2f5; display: flex; align-items: center; min-height: 100vh; margin: 0; }
+        .card { width: 100%; max-width: 400px; padding: 30px; border-radius: 15px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
+        .btn-primary { background: #007bff; border: none; }
+        .btn-success { background: #28a745; border: none; }
+        .toggle-link { cursor: pointer; color: #007bff; text-decoration: none; }
+        .toggle-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center">
+    
+    <div id="loginBox" class="card">
+        <h3 class="text-center fw-bold mb-4">MASUK</h3>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label small">Username</label>
+                <input type="text" id="user" class="form-control" placeholder="Username kamu" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Password</label>
+                <input type="password" id="pass" class="form-control" placeholder="Password kamu" required>
+            </div>
+            <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-bold">LOGIN</button>
+        </form>
+        <p class="text-center mt-3 small">Belum punya akun? <span class="toggle-link" onclick="toggleForm()">Daftar di sini</span></p>
+    </div>
+
+    <div id="registerBox" class="card hidden">
+        <h3 class="text-center fw-bold mb-4 text-success">DAFTAR AKUN</h3>
+        <form id="registerForm">
+            <div class="mb-3">
+                <label class="form-label small">Nama Lengkap</label>
+                <input type="text" id="regNama" class="form-control" placeholder="Nama sesuai absen" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Buat Username</label>
+                <input type="text" id="regUser" class="form-control" placeholder="Gunakan huruf kecil & tanpa spasi" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Buat Password</label>
+                <input type="password" id="regPass" class="form-control" placeholder="Minimal 6 karakter" required>
+            </div>
+            <button type="submit" id="btnDaftar" class="btn btn-success w-100 fw-bold">SIMPAN AKUN</button>
+        </form>
+        <p class="text-center mt-3 small">Sudah punya akun? <span class="toggle-link" onclick="toggleForm()">Kembali Login</span></p>
+    </div>
+
+</div>
+
+<script>
+    // KONFIGURASI (GANTI DENGAN PUNYAMU)
+    const SHEET_ID = '12c0_2Dp3okLJPClmbJk5dk6PYD8N67RDjvzYPxadGqI';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzKk8vgJmAI7CbpRjvt-FvH-NBTJrCt0KqyDXg8nSz2z0kJCgJh5tZm7peEGdi24gmj/exec';
+
+    // Fungsi Tukar Tampilan
+    function toggleForm() {
+        document.getElementById('loginBox').classList.toggle('hidden');
+        document.getElementById('registerBox').classList.toggle('hidden');
+    }
+
+    // --- LOGIKA DAFTAR (SIGN UP) ---
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnDaftar');
+        btn.disabled = true;
+        btn.innerText = "Mendaftarkan...";
+
+        const payload = {
+            type: "SIGN_UP",
+            nama: document.getElementById('regNama').value,
+            username: document.getElementById('regUser').value,
+            password: document.getElementById('regPass').value
+        };
+
+        try {
+            await fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            });
+            alert("Pendaftaran Berhasil! Silakan Login.");
+            document.getElementById('registerForm').reset();
+            toggleForm();
+        } catch (err) {
+            alert("Gagal mendaftar. Cek koneksi internet.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "SIMPAN AKUN";
+        }
+    });
+
+    // --- LOGIKA LOGIN ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userVal = document.getElementById('user').value.trim();
+        const passVal = document.getElementById('pass').value.trim();
+        const btn = document.getElementById('btnLogin');
+
+        btn.disabled = true;
+        btn.innerText = "Mengecek...";
+
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa`;
+        
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            const rows = json.table.rows;
+
+            let akunKetemu = rows.find(r => r.c[0] && r.c[1] && r.c[0].v == userVal && r.c[1].v == passVal);
+
+            if (akunKetemu) {
+                // Simpan identitas ke memori browser
+                localStorage.setItem('siswaLogin', userVal);
+                localStorage.setItem('namaLengkap', akunKetemu.c[2] ? akunKetemu.c[2].v : userVal);
+                window.location.href = 'dashboard-siswa.html';
+            } else {
+                alert("Username atau Password Salah!");
+                btn.disabled = false;
+                btn.innerText = "LOGIN";
+            }
+        } catch (err) {
+            alert("Database sedang sibuk, coba lagi.");
+            btn.disabled = false;
+            btn.innerText = "LOGIN";
+        }
+    });
+</script>
+
+</body>
+</html>
