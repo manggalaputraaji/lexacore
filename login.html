@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXACORE Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+        * {
+            font-family: "Lexend", sans-serif;
+        }
+        body { background: #ffffff; display: flex; align-items: center; min-height: 100vh; margin: 0; }
+        .card { width: 100%; max-width: 400px; padding: 30px; border-radius: 15px; border: none; box-shadow: 0 0 25px 8px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
+        .btn-primary { background: #007bff; border: none; }
+        .btn-success { background: #28a745; border: none; }
+        .toggle-link { cursor: pointer; color: #007bff; text-decoration: none; }
+        .toggle-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center">
+    <div class="row">
+    <div class="col-md-12">
+    <div class="text-center mt-4">
+        <img src="logolex.png" alt="Logo LEXACORE" style="max-width: 200px; margin-bottom: 20px;">
+    </div>
+    <div id="loginText" class="text-center mb-4">
+        <h2 class="fw-bold">Login Akun</h2>
+        <p class="text-muted">Silakan masuk ke akun Anda</p>
+    </div>
+    <div id="registerText" class="text-center mb-4 hidden">
+        <h2 class="fw-bold">Daftar Akun</h2>
+        <p class="text-muted">Silakan buat akun baru</p>
+    </div>
+    </div>
+    <div class="col-md-12 justify-content-center d-flex">
+    <div id="loginBox" class="card">
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label small">Username</label>
+                <input type="text" id="user" class="form-control" placeholder="Username kamu" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Password</label>
+                <input type="password" id="pass" class="form-control" placeholder="Password kamu" required>
+            </div>
+            <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-bold">LOGIN</button>
+        </form>
+        <p class="text-center mt-3 small">Belum punya akun? <span class="toggle-link" onclick="toggleForm()">Daftar di sini</span></p>
+    </div>
+
+    <div id="registerBox" class="card hidden">
+        <form id="registerForm">
+            <div class="mb-3">
+                <label class="form-label small">Nama Lengkap</label>
+                <input type="text" id="regNama" class="form-control" placeholder="e.g., John Doe, Budi Santoso" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Buat Username</label>
+                <input type="text" id="regUser" class="form-control" placeholder="Gunakan huruf kecil & tanpa spasi" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small">Buat Password</label>
+                <input type="password" id="regPass" class="form-control" placeholder="Minimal 6 karakter" required>
+            </div>
+            <button type="submit" id="btnDaftar" class="btn btn-success w-100 fw-bold">DAFTAR</button>
+        </form>
+        <p class="text-center mt-3 small">Sudah punya akun? <span class="toggle-link" onclick="toggleForm()">Kembali Login</span></p>
+    </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    const SHEET_ID = '12c0_2Dp3okLJPClmbJk5dk6PYD8N67RDjvzYPxadGqI';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzKk8vgJmAI7CbpRjvt-FvH-NBTJrCt0KqyDXg8nSz2z0kJCgJh5tZm7peEGdi24gmj/exec';
+
+    function toggleForm() {
+        document.getElementById('loginBox').classList.toggle('hidden');
+        document.getElementById('registerBox').classList.toggle('hidden');
+        document.getElementById('loginText').classList.toggle('hidden');
+        document.getElementById('registerText').classList.toggle('hidden');
+    }
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnDaftar');
+        btn.disabled = true;
+        btn.innerText = "Mendaftarkan...";
+
+        const payload = {
+            type: "SIGN_UP",
+            nama: document.getElementById('regNama').value,
+            username: document.getElementById('regUser').value,
+            password: document.getElementById('regPass').value
+        };
+        try {
+            await fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            });
+            alert("Pendaftaran Berhasil! Silakan Login.");
+            document.getElementById('registerForm').reset();
+            toggleForm();
+        } catch (err) {
+            alert("Gagal mendaftar. Cek koneksi internet.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "SIMPAN AKUN";
+        }
+    });
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userVal = document.getElementById('user').value.trim();
+        const passVal = document.getElementById('pass').value.trim();
+        const btn = document.getElementById('btnLogin');
+
+        btn.disabled = true;
+        btn.innerText = "Memverifikasi Data...";
+
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa`;
+        
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            const rows = json.table.rows;
+            let foundAcc = rows.find(r => r.c[0] && r.c[1] && r.c[0].v == userVal && r.c[1].v == passVal);
+            if (foundAcc) {
+                localStorage.setItem('siswaLogin', userVal);
+                localStorage.setItem('namaLengkap', foundAcc.c[2] ? foundAcc.c[2].v : userVal);
+                window.location.href = 'dashboard-siswa.html';
+            } else {
+                alert("Username atau Password Salah!");
+                btn.disabled = false;
+                btn.innerText = "LOGIN";
+            }
+        } catch (err) {
+            alert("Maaf, Database sedang sibuk. coba lagi!");
+            btn.disabled = false;
+            btn.innerText = "LOGIN";
+        }
+    });
+</script>
+
+</body>
+</html>

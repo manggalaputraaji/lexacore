@@ -67,52 +67,39 @@
     <a href="https://s.id/lexacore" target="_blank">LEXACORE</a> © 2026 by <a href="https://www.instagram.com/baramanggalaajee/" target="_blank">Bara Manggala A</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
 </footer>
 
-
 <script>
     const SHEET_ID = '12c0_2Dp3okLJPClmbJk5dk6PYD8N67RDjvzYPxadGqI';
     const user = localStorage.getItem('siswaLogin');
     const namaLengkap = localStorage.getItem('namaLengkap');
-
-    // Cek Login
     if (!user) {
         window.location.href = 'index.html';
     } else { 
         document.getElementById('namaSiswa').innerText = namaLengkap;
         muatDataTabel(); // Panggil fungsi muat data
     }
-
     async function muatDataTabel() {
         const queryText = `SELECT * WHERE LOWER(A) CONTAINS '${user.toLowerCase()}' OR LOWER(A) CONTAINS '${namaLengkap.toLowerCase()}'`;
         const encodedQuery = encodeURIComponent(queryText);
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Data%20Pelanggar&tq=${encodedQuery}`;
-
         try {
             const res = await fetch(url);
             const text = await res.text();
-            
-            // Proses bersihkan JSON dari Google
             const jsonData = JSON.parse(text.substring(47).slice(0, -2));
             const rows = jsonData.table.rows;
-            
             let htmlTbody = "";
-            
             if (!rows || rows.length === 0) {
                 htmlTbody = `<tr><td colspan="5" class="text-center text-muted">Belum ada catatan pelanggaran.</td></tr>`;
             } else {
             rows.forEach(row => {
-                // Ambil teks poin (kolom ke-4, indeks 3)
                 const poinTeks = row.c[3] ? row.c[3].v : '';
-                let warnaBadge = "bg-secondary"; // Warna default jika tidak cocok
-
-                // Logika penentuan warna
+                let warnaBadge = "bg-secondary";
                 if (poinTeks === "Ringan") {
                     warnaBadge = "bg-success";
                 } else if (poinTeks === "Sedang") {
-                    warnaBadge = "bg-warning text-dark"; // Tambah text-dark supaya tulisan hitam di background kuning
+                    warnaBadge = "bg-warning text-dark";
                 } else if (poinTeks === "Berat") {
                     warnaBadge = "bg-danger";
                 }
-
                 htmlTbody += `
                     <tr>
                         <td>${row.c[0] ? row.c[0].v : '-'}</td>
@@ -125,21 +112,16 @@
                     </tr>`;
                 });
             }
-
-            // Isi ke tabel
             document.getElementById('tabelKonten').innerHTML = htmlTbody;
-            // Sembunyikan pesan loading
             document.getElementById('loadingMsg').style.display = 'none';
-
         } catch (err) {
             console.error("Error:", err);
             document.getElementById('loadingMsg').innerHTML = "<span class='text-danger'>Gagal memuat data. Periksa koneksi atau izin Sheet.</span>";
         }
     }
-
     function logout() {
         localStorage.clear();
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
     }
 </script>
 
