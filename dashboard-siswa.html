@@ -75,7 +75,7 @@
         window.location.href = 'index.html';
     } else { 
         document.getElementById('namaSiswa').innerText = namaLengkap;
-        muatDataTabel(); // Panggil fungsi muat data
+        muatDataTabel();
     }
     async function muatDataTabel() {
         const queryText = `SELECT * WHERE LOWER(A) CONTAINS '${user.toLowerCase()}' OR LOWER(A) CONTAINS '${namaLengkap.toLowerCase()}'`;

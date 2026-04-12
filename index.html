@@ -89,7 +89,7 @@
     <div class="sticky-container">
         <img src="bg.jpg" class="bg-img">
         <div class="mask-layer">
-            <h1 class="text-style text-black">WELCOME</h1>
+            <h1 class="text-style text-black">WELCOME </h1>
         </div>
         <div class="final-layer">
             <h1 class="text-style text-white">LEXACORE</h1>
@@ -110,6 +110,7 @@
     </div> 
 </div>
 <script>
+  
   window.addEventListener('scroll', () => {
     const section = document.getElementById('mainSection');
     const content = document.getElementById('contentSection');
@@ -127,6 +128,37 @@
       content.classList.remove('reveal');
     }
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo(0, 0);
+    const jedaAwal = 1500;
+    setTimeout(() => {
+      const targetElement = document.getElementById('contentSection');
+      const totalDistance = targetElement.getBoundingClientRect().top + window.pageYOffset;
+      let start = null;
+      const durationTotal = 7000;
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        const p = progress / durationTotal;
+        let currentPos;
+        if (p < 0.7) { 
+          currentPos = totalDistance * Math.pow(p, 2.5); 
+        } else {
+          currentPos = totalDistance * Math.pow(p, 1.2); 
+        }
+        window.scrollTo(0, currentPos);
+        if (progress < durationTotal) {
+          window.requestAnimationFrame(step);
+        } else {
+          window.scrollTo(0, totalDistance);
+        }
+      }
+      window.requestAnimationFrame(step);
+    }, jedaAwal);
+  });
+
+</script>
 </script>
 
 </body>
