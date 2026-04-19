@@ -20,7 +20,7 @@
   .mask-layer {
     position: absolute;
     inset: 0;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,9 +50,9 @@
     position: relative;
     z-index: 15;
   }
-  .text-black { color: black; mix-blend-mode: multiply; }
+  .text-black { color: rgb(0, 0, 0); mix-blend-mode: multiply; }
   .text-white { 
-    color: white; 
+    color: rgb(255, 255, 255); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,7 +62,7 @@
   .is-scrolled .final-layer { opacity: 1; }
   .content {
     min-height: 100vh;
-    background: white;
+    background: rgb(255, 255, 255);
     padding: 100px 50px;
     position: relative;
     z-index: 20;
