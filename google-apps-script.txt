@@ -1,0 +1,153 @@
+// =========================
+// GOOGLE APPS SCRIPT - Updated
+// =========================
+
+// SENDGRID API KEY
+const SENDGRID_API_KEY = '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';
+
+function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var data = JSON.parse(e.postData.contents);
+
+  var sheetUser = ss.getSheetByName('UserSiswa');
+  var sheetData = ss.getSheetByName('Data Pelanggar');
+  var sheetOTP = ss.getSheetByName('OTP');
+
+  // =========================
+  // 1. SIGN UP + KIRIM OTP via SendGrid
+  // =========================
+  if (data.type === "SIGN_UP_OTP") {
+    var otp = Math.floor(100000 + Math.random() * 900000).toString();
+    var waktu = new Date();
+
+    // Simpan OTP ke sheet
+    sheetOTP.appendRow([data.email, otp, waktu]);
+
+    // Kirim email via SendGrid
+    var emailSent = sendEmailViaSendGrid(
+      data.email,
+      "Kode OTP LEXACORE",
+      "Kode OTP Anda adalah: " + otp + "\n\nKode ini berlaku selama 5 menit.\n\nJika Anda tidak meminta kode ini, abaikan email ini."
+    );
+
+    if (emailSent) {
+      return jsonResponse(true, "OTP terkirim ke " + data.email);
+    } else {
+      return jsonResponse(false, "Gagal mengirim email. Pastikan email valid.");
+    }
+  }
+
+  // =========================
+  // 2. VERIFIKASI OTP + SIMPAN USER
+  // =========================
+  else if (data.type === "VERIFY_AND_SAVE") {
+    var rows = sheetOTP.getDataRange().getValues();
+    var found = false;
+    var otpRow = -1;
+
+    // Cari OTP yang cocok (cari dari bawah untuk dapat yang terbaru)
+    for (var i = rows.length - 1; i >= 1; i--) {
+      if (rows[i][0] == data.email && rows[i][1] == data.otpInput) {
+        // Cek apakah OTP masih berlaku (5 menit)
+        var otpTime = new Date(rows[i][2]);
+        var now = new Date();
+        var diffMs = now - otpTime;
+        var diffMins = diffMs / 1000 / 60;
+
+        if (diffMins <= 5) {
+          found = true;
+          otpRow = i + 1;
+          break;
+        } else {
+          return jsonResponse(false, "OTP sudah expired. Minta OTP baru.");
+        }
+      }
+    }
+
+    if (found) {
+      // Simpan user ke sheet (kolom: username, password, nama, email)
+      sheetUser.appendRow([
+        data.username,
+        data.password,
+        data.nama,
+        data.email
+      ]);
+
+      return jsonResponse(true, "Pendaftaran berhasil! Silakan login.");
+    } else {
+      return jsonResponse(false, "Kode OTP salah atau tidak ditemukan.");
+    }
+  }
+
+  // =========================
+  // 3. INPUT PELANGGARAN
+  // =========================
+  else if (data.type === "INPUT_PELANGGARAN") {
+    var tanggal = new Date();
+
+    sheetData.appendRow([
+      data.nama,
+      data.kelas,
+      data.pelanggaran,
+      data.poin,
+      tanggal
+    ]);
+
+    return jsonResponse(true, "Sukses Input");
+  }
+
+  // =========================
+  // DEFAULT
+  // =========================
+  return jsonResponse(false, "Request tidak dikenal");
+}
+
+// =========================
+// SENDGRID EMAIL FUNCTION
+// =========================
+function sendEmailViaSendGrid(toEmail, subject, body) {
+  var url = 'https://api.sendgrid.com/v3/mail/send';
+
+  var payload = {
+    personalizations: [{
+      to: [{ email: toEmail }]
+    }],
+    from: { email: 'lexacoresiptatas@gmail.com', name: 'LEXACORE' },
+    subject: subject,
+    content: [{
+      type: 'text/plain',
+      value: body
+    }]
+  };
+
+  try {
+    var response = UrlFetchApp.fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + SENDGRID_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+
+    var code = response.getResponseCode();
+    Logger.log('SendGrid Response Code: ' + code);
+    return (code >= 200 && code < 300);
+  } catch (error) {
+    Logger.log('SendGrid Error: ' + error.message);
+    return false;
+  }
+}
+
+// =========================
+// JSON RESPONSE HELPER
+// =========================
+function jsonResponse(success, message) {
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: success,
+      message: message
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}

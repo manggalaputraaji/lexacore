@@ -59,6 +59,10 @@
                 <input type="text" id="regNama" class="form-control" placeholder="e.g., John Doe, Budi Santoso" required>
             </div>
             <div class="mb-3">
+                <label class="form-label small">Email</label>
+                <input type="email" id="regEmail" class="form-control" placeholder="email@example.com" required>
+            </div>
+            <div class="mb-3">
                 <label class="form-label small">Buat Username</label>
                 <input type="text" id="regUser" class="form-control" placeholder="Gunakan huruf kecil & tanpa spasi" required>
             </div>
@@ -70,13 +74,37 @@
         </form>
         <p class="text-center mt-3 small">Sudah punya akun? <span class="toggle-link" onclick="toggleForm()">Kembali Login</span></p>
     </div>
+
+    <div id="otpBox" class="card hidden">
+        <div class="text-center mb-3">
+            <h5 class="fw-bold">Verifikasi Email</h5>
+            <p class="text-muted small">Kode OTP telah dikirim ke email Anda</p>
+            <p class="small fw-bold" id="otpEmailDisplay"></p>
+        </div>
+        <form id="otpForm">
+            <div class="mb-3">
+                <label class="form-label small">Masukkan Kode OTP</label>
+                <input type="text" id="otpCode" class="form-control text-center" placeholder="XXXXXX" maxlength="6" required>
+            </div>
+            <button type="submit" id="btnVerify" class="btn btn-primary w-100 fw-bold">VERIFIKASI</button>
+        </form>
+        <p class="text-center mt-3 small">
+            Tidak menerima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
+        </p>
+        <p class="text-center mt-2 small">
+            <span class="toggle-link" onclick="cancelOTP()">Batal</span>
+        </p>
+    </div>
     </div>
     </div>
 </div>
 
 <script>
     const SHEET_ID = '12c0_2Dp3okLJPClmbJk5dk6PYD8N67RDjvzYPxadGqI';
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzKk8vgJmAI7CbpRjvt-FvH-NBTJrCt0KqyDXg8nSz2z0kJCgJh5tZm7peEGdi24gmj/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzAgp-X1OknSGiRmp5u9jyPCjMdLOdDxxBug2_6GDD-kVDjm6ji2q2MOJGZ8dDawx7B/exec';
+
+    let pendingUserData = null;
+    let countdownTimer = null;
 
     function toggleForm() {
         document.getElementById('loginBox').classList.toggle('hidden');
@@ -84,32 +112,152 @@
         document.getElementById('loginText').classList.toggle('hidden');
         document.getElementById('registerText').classList.toggle('hidden');
     }
+
+    function showOTPBox(email) {
+        document.getElementById('registerBox').classList.add('hidden');
+        document.getElementById('registerText').classList.add('hidden');
+        document.getElementById('otpBox').classList.remove('hidden');
+        document.getElementById('otpEmailDisplay').textContent = email;
+        document.getElementById('otpCode').value = '';
+        document.getElementById('otpCode').focus();
+    }
+
+    function cancelOTP() {
+        document.getElementById('otpBox').classList.add('hidden');
+        document.getElementById('registerBox').classList.remove('hidden');
+        document.getElementById('registerText').classList.remove('hidden');
+        document.getElementById('registerForm').reset();
+        pendingUserData = null;
+    }
+
+    async function resendOTP() {
+        if (!pendingUserData) return;
+        
+        const btn = document.querySelector('#otpBox .toggle-link');
+        btn.textContent = 'Mengirim ulang...';
+        btn.style.pointerEvents = 'none';
+        
+        try {
+            const payload = {
+                type: "SIGN_UP_OTP",
+                email: pendingUserData.email,
+                nama: pendingUserData.nama,
+                username: pendingUserData.username
+            };
+            
+            const response = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert("Kode OTP baru telah dikirim!");
+            } else {
+                alert("Gagal: " + result.message);
+            }
+        } catch (err) {
+            alert("Gagal mengirim OTP. Coba lagi.");
+        }
+        
+        btn.textContent = 'Kirim Ulang';
+        btn.style.pointerEvents = 'auto';
+    }
+
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnDaftar');
         btn.disabled = true;
-        btn.innerText = "Mendaftarkan...";
+        btn.innerText = "Mengirim kode OTP...";
+
+        const nama = document.getElementById('regNama').value;
+        const email = document.getElementById('regEmail').value;
+        const username = document.getElementById('regUser').value;
+        const password = document.getElementById('regPass').value;
+
+        pendingUserData = { nama, email, username, password };
 
         const payload = {
-            type: "SIGN_UP",
-            nama: document.getElementById('regNama').value,
-            username: document.getElementById('regUser').value,
-            password: document.getElementById('regPass').value
+            type: "SIGN_UP_OTP",
+            email: email,
+            nama: nama,
+            username: username
         };
+
         try {
-            await fetch(WEB_APP_URL, {
+            const response = await fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            alert("Pendaftaran Berhasil! Silakan Login.");
-            document.getElementById('registerForm').reset();
-            toggleForm();
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showOTPBox(email);
+                alert("Kode OTP telah dikirim ke email Anda!");
+            } else {
+                alert("Gagal: " + result.message);
+                btn.disabled = false;
+                btn.innerText = "DAFTAR";
+            }
         } catch (err) {
-            alert("Gagal mendaftar. Cek koneksi internet.");
-        } finally {
+            alert("Gagal mengirim OTP. Cek koneksi internet.");
             btn.disabled = false;
-            btn.innerText = "SIMPAN AKUN";
+            btn.innerText = "DAFTAR";
+        }
+    });
+
+    document.getElementById('otpForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnVerify');
+        const otpCode = document.getElementById('otpCode').value.trim();
+        
+        if (otpCode.length !== 6) {
+            alert("Masukkan kode 6 digit!");
+            return;
+        }
+        
+        btn.disabled = true;
+        btn.innerText = "Memverifikasi...";
+
+        const payload = {
+            type: "VERIFY_AND_SAVE",
+            email: pendingUserData.email,
+            otpInput: otpCode,
+            nama: pendingUserData.nama,
+            username: pendingUserData.username,
+            password: pendingUserData.password
+        };
+
+        try {
+            const response = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert("Pendaftaran Berhasil! Silakan Login.");
+                document.getElementById('registerForm').reset();
+                document.getElementById('otpForm').reset();
+                document.getElementById('otpBox').classList.add('hidden');
+                document.getElementById('loginBox').classList.remove('hidden');
+                document.getElementById('loginText').classList.remove('hidden');
+                pendingUserData = null;
+            } else {
+                alert("Verifikasi gagal: " + result.message);
+                btn.disabled = false;
+                btn.innerText = "VERIFIKASI";
+            }
+        } catch (err) {
+            alert("Gagal verifikasi. Coba lagi.");
+            btn.disabled = false;
+            btn.innerText = "VERIFIKASI";
         }
     });
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
