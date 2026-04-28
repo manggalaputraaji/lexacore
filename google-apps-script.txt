@@ -1,5 +1,5 @@
 // =========================
-// GOOGLE APPS SCRIPT - Using MailApp (FREE)
+// GOOGLE APPS SCRIPT - Final Version
 // =========================
 
 function doPost(e) {
@@ -10,16 +10,13 @@ function doPost(e) {
   var sheetData = ss.getSheetByName('Data Pelanggar');
   var sheetOTP = ss.getSheetByName('OTP');
 
-  // =========================
   // 1. SIGN UP + KIRIM OTP
-  // =========================
   if (data.type === "SIGN_UP_OTP") {
     var otp = Math.floor(100000 + Math.random() * 900000).toString();
     var waktu = new Date();
 
     sheetOTP.appendRow([data.email, otp, waktu]);
 
-    // Kirim email via MailApp (GRATIS)
     MailApp.sendEmail({
       to: data.email,
       subject: "Kode OTP LEXACORE",
@@ -30,9 +27,7 @@ function doPost(e) {
     return jsonResponse(true, "OTP terkirim");
   }
 
-  // =========================
   // 2. VERIFIKASI OTP + SIMPAN USER
-  // =========================
   else if (data.type === "VERIFY_AND_SAVE") {
     var rows = sheetOTP.getDataRange().getValues();
     var found = false;
@@ -60,9 +55,7 @@ function doPost(e) {
     }
   }
 
-  // =========================
   // 3. INPUT PELANGGARAN
-  // =========================
   else if (data.type === "INPUT_PELANGGARAN") {
     var tanggal = new Date();
     sheetData.appendRow([data.nama, data.kelas, data.pelanggaran, data.poin, tanggal]);
