@@ -14,123 +14,140 @@
     height: 100vh;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow: hidden;
   }
-  .mask-layer {
-    position: absolute;
-    inset: 0;
-    background-color: rgb(255, 255, 255);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    mix-blend-mode: screen;
-    transition: opacity 0.6s ease-in-out;
-  }
-  .final-layer {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    opacity: 0;
-    transition: opacity 0.6s ease-in-out;
-  }
+
   .bg-img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    z-index: 1;
+    background: url('bg.jpg') center center / cover no-repeat fixed;
   }
+
+  .white-overlay {
+    position: absolute;
+    inset: 0;
+    background: white;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+  }
+
+  .text-container {
+    position: relative;
+    z-index: 10;
+    margin-bottom: 30px;
+    transition: transform 0.6s ease-in-out;
+  }
+
   .text-style {
     font-size: 15vw;
     font-weight: 900;
     font-family: 'Arial Black', sans-serif;
     margin: 0;
-    position: relative;
-    z-index: 15;
+    color: white;
+    text-transform: uppercase;
   }
-  .text-black { color: rgb(0, 0, 0); mix-blend-mode: multiply; }
-  .text-white { 
-    color: rgb(255, 255, 255); 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+  .text-masked {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
+    /* This forces the browser to ignore the text box and use the viewport for the image calc */
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: black;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
   }
-  .is-scrolled .mask-layer { opacity: 0; }
-  .is-scrolled .final-layer { opacity: 1; }
+
   .content {
-    min-height: 100vh;
-    background: rgb(255, 255, 255);
-    padding: 100px 50px;
     position: relative;
     z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     opacity: 0;
-    transform: translateY(50px);
-    transition: all 1s ease-out;
+    transform: translateY(40px);
+    transition: all 0.8s ease-in-out;
+    margin-top: -50px;
   }
-  .content.reveal {
-    opacity: 1;
-    transform: translateY(0);
+
+  .logo-img {
+    max-width: 260px;
+    margin-bottom: 1.5rem;
   }
-  a { text-decoration: none; color: black; transition: color 0.3s ease; }
-  a:hover { color: white;
-  text-shadow: 
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000; }
+
+  .enter-link {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .is-scrolled .white-overlay { opacity: 1; }
+  .is-scrolled .text-container { transform: translateY(-80px); }
+  .is-scrolled .text-masked { opacity: 1; }
+  .is-scrolled .content { opacity: 1; transform: translateY(0); }
+  
+  .is-scrolled .enter-link:hover {
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  }
 </style>
 </head>
 <body>
 
 <div class="hero-section" id="mainSection">
     <div class="sticky-container">
-        <img src="bg.jpg" class="bg-img">
-        <div class="mask-layer">
-            <h1 class="text-style text-black">WELCOME </h1>
+        <div class="bg-img"></div> 
+        <div class="white-overlay"></div>
+        
+        <div class="text-container">
+            <h1 class="text-style">WELCOME</h1>
+            <h1 class="text-style text-masked">WELCOME</h1>
         </div>
-        <div class="final-layer">
-            <h1 class="text-style text-white">WELCOME</h1>
+
+        <div class="content" id="contentSection">
+            <img src="logolex.png" alt="Logo" class="logo-img">
+            <a href="login.html" class="enter-link">ENTER SITE</a>
         </div>
     </div>
 </div>
 
-<div class="content d-flex align-items-center justify-content-center" id="contentSection">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <img src="logolex.png" alt="Logo LEXACORE" class="img-fluid mb-4 mx-auto d-block" style="max-width: 250px;">
-            </div>
-            <div class="col-md-8 text-center">
-                <a href="login.html"><h2><b>ENTER SITE</b></h2></a>
-            </div>
-        </div> 
-    </div> 
-</div>
 <script>
-
   window.addEventListener('scroll', () => {
     const section = document.getElementById('mainSection');
-    const content = document.getElementById('contentSection');
-    const scrollY = window.scrollY;
-    const triggerText = window.innerHeight * 0.4; 
-    if (scrollY > triggerText) {
+    if (window.scrollY > window.innerHeight * 0.2) {
       section.classList.add('is-scrolled');
     } else {
       section.classList.remove('is-scrolled');
     }
-    const triggerContent = window.innerHeight * 1.5; 
-    if (scrollY > triggerContent) {
-      content.classList.add('reveal');
-    } else {
-      content.classList.remove('reveal');
-    }
   });
 
-</script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const startTime = performance.now();
+      function animate(time) {
+        const p = Math.min((time - startTime) / 200, 1);
+        window.scrollTo(0, scrollHeight * (p * (2 - p)));
+        if (p < 1) requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    }, 800);
+  });
 </script>
 
 </body>

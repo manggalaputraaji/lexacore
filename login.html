@@ -163,11 +163,11 @@
         }
     }
 
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnDaftar');
         btn.disabled = true;
-        btn.innerText = "Mengirim kode OTP...";
+        btn.innerText = 'Mendaftarkan...';
 
         const nama = document.getElementById('regNama').value;
         const email = document.getElementById('regEmail').value;
@@ -184,23 +184,22 @@
         };
 
         try {
-            // Use no-cors to avoid CORS issues, but verify via a different approach
-            await fetch(WEB_APP_URL, {
+            const response = await fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify(payload)
             });
             
-            // Since no-cors doesn't return response, show OTP after delay
-            // The server will still process the request
-            setTimeout(() => {
+            const result = await response.json(); // Baca jawaban Apps Script
+
+            if (result.success) {
                 showOTPBox(email);
-                alert("Kode OTP telah dikirim ke email Anda! Jika tidak ada, cek spam.");
-                btn.disabled = false;
-                btn.innerText = "DAFTAR";
-            }, 1500);
+                alert("Kode OTP telah dikirim ke email Anda!");
+            } else {
+                alert("Gagal mengirim OTP: " + result.message);
+            }
         } catch (err) {
-            alert("Gagal mengirim OTP. Cek koneksi internet.");
+            alert("Terjadi kesalahan. Cek koneksi atau setting CORS Apps Script.");
+        } finally {
             btn.disabled = false;
             btn.innerText = "DAFTAR";
         }
@@ -229,14 +228,15 @@
         };
 
         try {
-            await fetch(WEB_APP_URL, {
+            const response = await fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify(payload)
             });
             
-            // With no-cors, we assume success after delay
-            setTimeout(() => {
+            const result = await response.json();
+
+            if (result.success) {
+                // Jika OTP Benar
                 alert("Pendaftaran Berhasil! Silakan Login.");
                 document.getElementById('registerForm').reset();
                 document.getElementById('otpForm').reset();
@@ -244,15 +244,19 @@
                 document.getElementById('loginBox').classList.remove('hidden');
                 document.getElementById('loginText').classList.remove('hidden');
                 pendingUserData = null;
-                btn.disabled = false;
-                btn.innerText = "VERIFIKASI";
-            }, 1500);
+            } else {
+                // Jika OTP SALAH (Nomor Random) atau EXPIRED
+                alert("GAGAL: " + result.message); // Akan muncul "OTP salah"
+                document.getElementById('otpCode').value = ''; // Kosongkan input biar isi lagi
+            }
         } catch (err) {
-            alert("Gagal verifikasi. Coba lagi.");
+            alert("Gagal verifikasi. Pastikan Apps Script sudah di-deploy sebagai 'Anyone'.");
+        } finally {
             btn.disabled = false;
             btn.innerText = "VERIFIKASI";
         }
     });
+
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const userVal = document.getElementById('user').value.trim();
