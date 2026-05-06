@@ -3,127 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEXACORE Login</title>
+    <title>LEXACORE | Login & Daftar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Tambahan CDN SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
         * {
             font-family: "Lexend", sans-serif;
         }
-        body { background: #ffffff; display: flex; align-items: center; min-height: 100vh; margin: 0; }
-        .card { width: 100%; max-width: 400px; padding: 30px; border-radius: 15px; border: none;}
-        .hidden { display: none; }
-        .btn-primary { background: #007bff; border: none; }
-        .btn-success { background: #28a745; border: none; }
-        .toggle-link { cursor: pointer; color: #007bff; text-decoration: none; }
-        .toggle-link:hover { text-decoration: underline; }
 
-        /* Style SweetAlert agar serasi dengan LEXACORE */
-        .swal2-popup { border-radius: 20px !important; border: 3px solid #000 !important; }
+        body {
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            border: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .toggle-link {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Style SweetAlert */
+        .swal2-popup {
+            border-radius: 20px !important;
+            border: 4px solid #000 !important;
+        }
         .swal-border-error { border-color: #ff2a2a !important; }
         .swal-border-success { border-color: #28a745 !important; }
 
+        /* Icon Validasi User */
+        .input-group-custom { position: relative; }
+        .status-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 900;
+            z-index: 10;
+            display: none;
+        }
+        .text-success-custom { color: #28a745; }
+        .text-danger-custom { color: #ff2a2a; }
+
+        /* ==================================
+           STYLE OTP TELEGRAM / NEOBRUTALISM
+           ================================== */
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .otp-input {
+            width: 48px;
+            height: 55px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 900;
+            border: 3px solid #000;
+            border-radius: 10px;
+            background: #fff;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #000;
+            transform: translateY(-2px);
+            border-color: #007bff;
+        }
+
+        /* Hilangkan panah di input number */
+        .otp-input::-webkit-outer-spin-button,
+        .otp-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Animasi FLIP saat ngecek */
+        .otp-flip {
+            animation: flipAnim 0.5s ease-in-out forwards;
+            pointer-events: none;
+        }
+
+        /* Animasi GETER (Shake) saat salah */
+        .otp-error {
+            border-color: #ff2a2a !important;
+            animation: shakeAnim 0.4s ease-in-out;
+            color: #ff2a2a;
+        }
+
+        /* Animasi SUKSES */
+        .otp-success {
+            border-color: #28a745 !important;
+            background-color: #e8f5e9;
+            color: #28a745;
+        }
+
+        @keyframes flipAnim {
+            0% { transform: perspective(400px) rotateY(0); }
+            50% { transform: perspective(400px) rotateY(90deg); background-color: #f1f1f1; }
+            100% { transform: perspective(400px) rotateY(0); }
+        }
+
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        
         @keyframes slideDownAlert {
-          0% { transform: translateY(-100%); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
-        .swal-slide-down {
-          animation: slideDownAlert 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
-        }
+        .swal-slide-down { animation: slideDownAlert 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important; }
     </style>
 </head>
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="row">
-    <div class="col-md-12">
-    <div class="text-center mt-4">
-        <img src="logolex.png" alt="Logo LEXACORE" style="max-width: 200px; margin-bottom: 20px;">
-    </div>
-    <div id="loginText" class="text-center mb-4">
-        <h2 class="fw-bold">Login Akun</h2>
-        <p class="text-muted">Silakan masuk ke akun Anda</p>
-    </div>
-    <div id="registerText" class="text-center mb-4 hidden">
-        <h2 class="fw-bold">Daftar Akun</h2>
-        <p class="text-muted">Silakan buat akun baru</p>
-    </div>
-    </div>
-    <div class="col-md-12 justify-content-center d-flex">
-    <div id="loginBox" class="card">
-        <form id="loginForm">
-            <div class="mb-3">
-                <label class="form-label small">Username</label>
-                <input type="text" id="user" class="form-control" placeholder="Username kamu" required>
+    <div class="row w-100 justify-content-center">
+        
+        <div class="col-md-12 text-center">
+            <img src="logolex.png" alt="Logo" style="max-width: 180px; margin-bottom: 20px;">
+            <div id="titleArea">
+                <h2 id="mainTitle" class="fw-bold">Login Akun</h2>
+                <p id="mainSub" class="text-muted">Silakan masuk ke akun Anda</p>
             </div>
-            <div class="mb-3">
-                <label class="form-label small">Password</label>
-                <input type="password" id="pass" class="form-control" placeholder="Password kamu" required>
-            </div>
-            <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-bold">LOGIN</button>
-        </form>
-        <p class="text-center mt-3 small">Belum punya akun? <span class="toggle-link" onclick="toggleForm()">Daftar di sini</span></p>
-    </div>
-
-    <div id="registerBox" class="card hidden">
-        <form id="registerForm">
-            <div class="mb-3">
-                <label class="form-label small">Nama Lengkap</label>
-                <input type="text" id="regNama" class="form-control" placeholder="e.g., John Doe, Budi Santoso" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label small">Email</label>
-                <input type="email" id="regEmail" class="form-control" placeholder="email@example.com" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label small">Buat Username</label>
-                <input type="text" id="regUser" class="form-control" placeholder="Gunakan huruf kecil & tanpa spasi" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label small">Buat Password</label>
-                <input type="password" id="regPass" class="form-control" placeholder="Minimal 6 karakter" required>
-            </div>
-            <button type="submit" id="btnDaftar" class="btn btn-success w-100 fw-bold">DAFTAR</button>
-        </form>
-        <p class="text-center mt-3 small">Sudah punya akun? <span class="toggle-link" onclick="toggleForm()">Kembali Login</span></p>
-    </div>
-
-    <div id="otpBox" class="card hidden">
-        <div class="text-center mb-3">
-            <h5 class="fw-bold">Verifikasi Email</h5>
-            <p class="text-muted small">Kode OTP telah dikirim ke email Anda</p>
-            <p class="small fw-bold" id="otpEmailDisplay"></p>
         </div>
-        <form id="otpForm">
-            <div class="mb-3">
-                <label class="form-label small">Masukkan Kode OTP</label>
-                <input type="text" id="otpCode" class="form-control text-center" placeholder="XXXXXX" maxlength="6" required>
+
+        <div class="col-md-12 d-flex justify-content-center">
+            
+            <!-- FORM LOGIN -->
+            <div id="loginBox" class="card shadow-sm border">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Username</label>
+                        <input type="text" id="user" class="form-control" placeholder="Username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Password</label>
+                        <input type="password" id="pass" class="form-control" placeholder="Password" required>
+                    </div>
+                    <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-bold">
+                        LOGIN
+                    </button>
+                </form>
+                <p class="text-center mt-3 small">
+                    Belum punya akun? <span class="toggle-link" onclick="toggleForm('reg')">Daftar di sini</span>
+                </p>
             </div>
-            <button type="submit" id="btnVerify" class="btn btn-primary w-100 fw-bold">VERIFIKASI</button>
-        </form>
-        <p class="text-center mt-3 small">
-            Tidak menerima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
-        </p>
-        <p class="text-center mt-2 small">
-            <span class="toggle-link" onclick="cancelOTP()">Batal</span>
-        </p>
-    </div>
-    </div>
+
+            <!-- FORM DAFTAR -->
+            <div id="registerBox" class="card shadow-sm border hidden">
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nama Lengkap</label>
+                        <input type="text" id="regNama" class="form-control" placeholder="Nama Lengkap" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Email</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="email@sekolah.com" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Buat Username</label>
+                        <div class="input-group-custom">
+                            <input type="text" id="regUser" class="form-control" placeholder="Username unik" required>
+                            <!-- ICON VALIDASI -->
+                            <span id="userStatusIcon" class="status-icon"></span>
+                        </div>
+                        <div id="userFeedback" class="small mt-1" style="display:none;"></div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Buat Password</label>
+                        <input type="password" id="regPass" class="form-control" placeholder="Minimal 6 karakter" required>
+                    </div>
+                    
+                    <button type="submit" id="btnDaftar" class="btn btn-success w-100 fw-bold">
+                        KIRIM OTP
+                    </button>
+                </form>
+                <p class="text-center mt-3 small">
+                    Sudah punya akun? <span class="toggle-link" onclick="toggleForm('login')">Kembali Login</span>
+                </p>
+            </div>
+
+            <!-- BOX OTP TELEGRAM STYLE -->
+            <div id="otpBox" class="card shadow-sm border hidden">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold">Verifikasi Email</h4>
+                    <p class="text-muted small mb-0">Kode 6 angka telah dikirim ke:</p>
+                    <p class="small fw-bold text-dark" id="otpEmailDisplay"></p>
+                </div>
+                
+                <!-- Kotak OTP -->
+                <div class="otp-container" id="otpContainer">
+                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                </div>
+                
+                <p class="text-center mt-3 small mb-1">
+                    Tidak menerima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
+                </p>
+                <p class="text-center small">
+                    <span class="toggle-link text-danger" onclick="cancelOTP()">Batal Daftar</span>
+                </p>
+            </div>
+
+        </div>
     </div>
 </div>
 
 <script>
     const SHEET_ID = '19aDh5DCRpV0FJzxa7Yw6teAhnRwHOCP-zS3g8-YA_sg';
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby9WYcW3GCwSRTEYav-hhP361Au2j5HuZ6Ghi04TIbHrGOh65J20juuF_R3dsfWvhFA/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyPdkSJW5FTU24YCbOF1jguwpKnA_gGVWy8Iw8yMYLGP-GIrecvZglQWgxiQVszs3NM/exec';
 
-    let pendingUserData = null;
-    let countdownTimer = null;
+    let pendingData = null;
 
-    // Fungsi Pembantu SweetAlert (Auto Close 1.5s)
+    function toggleForm(type) {
+        const login = document.getElementById('loginBox');
+        const reg = document.getElementById('registerBox');
+        const otp = document.getElementById('otpBox');
+        const title = document.getElementById('mainTitle');
+        const sub = document.getElementById('mainSub');
+
+        login.classList.add('hidden');
+        reg.classList.add('hidden');
+        otp.classList.add('hidden');
+
+        if (type === 'login') {
+            login.classList.remove('hidden');
+            title.innerText = "Login Akun";
+            sub.innerText = "Silakan masuk ke akun Anda";
+        } else {
+            reg.classList.remove('hidden');
+            title.innerText = "Daftar Akun";
+            sub.innerText = "Silakan buat akun baru";
+        }
+    }
+
     function showSwal(icon, title, text, borderClass) {
         Swal.fire({
             position: 'top',
@@ -138,20 +282,123 @@
         });
     }
 
-    function toggleForm() {
-        document.getElementById('loginBox').classList.toggle('hidden');
-        document.getElementById('registerBox').classList.toggle('hidden');
-        document.getElementById('loginText').classList.toggle('hidden');
-        document.getElementById('registerText').classList.toggle('hidden');
+    // ============================================
+    // LOGIKA OTP BOX (TELEGRAM STYLE)
+    // ============================================
+    const otpInputs = document.querySelectorAll('.otp-input');
+    
+    otpInputs.forEach((input, index) => {
+        // Pindah otomatis ke kotak selanjutnya
+        input.addEventListener('input', (e) => {
+            // Biar ga bisa input lebih dari 1 angka
+            if (e.target.value.length > 1) {
+                e.target.value = e.target.value.slice(0, 1);
+            }
+            if (e.target.value !== '' && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+            checkAutoSubmit(); // Cek apakah udah full 6 angka
+        });
+
+        // Hapus pake backspace, lompat ke kiri
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+
+        // Support fitur paste (tempel 6 angka sekaligus)
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6).split('');
+            if (pastedData.length > 0) {
+                otpInputs.forEach((inp, i) => {
+                    if (pastedData[i]) inp.value = pastedData[i];
+                });
+                const focusIndex = Math.min(pastedData.length, 6) - 1;
+                otpInputs[focusIndex].focus();
+                checkAutoSubmit();
+            }
+        });
+    });
+
+    async function checkAutoSubmit() {
+        const code = Array.from(otpInputs).map(inp => inp.value).join('');
+        if (code.length === 6) {
+            // 1. Kunci semua input dulu
+            otpInputs.forEach(inp => inp.disabled = true);
+
+            // 2. Mainkan animasi Flip satu-satu kaya gelombang (mikir)
+            for (let i = 0; i < otpInputs.length; i++) {
+                otpInputs[i].classList.add('otp-flip');
+                await new Promise(r => setTimeout(r, 100)); // Delay antar kotak 100ms
+            }
+
+            // Tunggu animasi flip selesai
+            await new Promise(r => setTimeout(r, 500)); 
+
+            // 3. Verifikasi ke Database
+            verifyOTPServer(code);
+        }
     }
 
-    function showOTPBox(email) {
-        document.getElementById('registerBox').classList.add('hidden');
-        document.getElementById('registerText').classList.add('hidden');
-        document.getElementById('otpBox').classList.remove('hidden');
-        document.getElementById('otpEmailDisplay').textContent = email;
-        document.getElementById('otpCode').value = '';
-        document.getElementById('otpCode').focus();
+    async function verifyOTPServer(code) {
+        try {
+            const res = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    type: "VERIFY_AND_SAVE",
+                    otpInput: code,
+                    ...pendingData
+                })
+            });
+            const result = await res.json();
+
+            // MATIKAN ANIMASI FLIP DULU
+            otpInputs.forEach(inp => inp.classList.remove('otp-flip'));
+
+            if (result.success) {
+                // JIKA BENAR: Kotak Hijau, lalu Nyan Cat
+                otpInputs.forEach(inp => inp.classList.add('otp-success'));
+                
+                setTimeout(() => {
+                    Swal.fire({
+                        title: "PENDAFTARAN BERHASIL!",
+                        text: "Selamat Datang! Silakan Login.",
+                        width: 600,
+                        padding: "3em",
+                        color: "#716add",
+                        background: "#fff url(https://sweetalert2.github.io/images/trees.png)",
+                        backdrop: `rgba(0,0,123,0.4) url("https://sweetalert2.github.io/images/nyan-cat.gif") left top no-repeat`,
+                        showConfirmButton: false,
+                        timer: 2500
+                    }).then(() => location.reload());
+                }, 500);
+
+            } else {
+                // JIKA SALAH: Geterin kotaknya, merahin, terus hapus isinya
+                otpInputs.forEach(inp => {
+                    inp.classList.add('otp-error');
+                    inp.disabled = false; // Buka kunci lagi
+                });
+                
+                // Hilangkan class merah setelah animasi geter selesai (400ms)
+                setTimeout(() => {
+                    otpInputs.forEach(inp => {
+                        inp.classList.remove('otp-error');
+                        inp.value = ''; // Hapus angkanya
+                    });
+                    otpInputs[0].focus(); // Fokus lagi ke kotak pertama
+                }, 500);
+            }
+
+        } catch (err) {
+            Swal.fire('Error', 'Gagal memverifikasi', 'error');
+            otpInputs.forEach(inp => {
+                inp.disabled = false;
+                inp.classList.remove('otp-flip');
+            });
+        }
     }
 
     function cancelOTP() {
@@ -159,184 +406,168 @@
         document.getElementById('registerBox').classList.remove('hidden');
         document.getElementById('registerText').classList.remove('hidden');
         document.getElementById('registerForm').reset();
-        pendingUserData = null;
+        pendingData = null;
+        
+        // Reset validasi Username
+        document.getElementById('userStatusIcon').style.display = 'none';
+        document.getElementById('userFeedback').style.display = 'none';
+        
+        // Reset Kotak OTP
+        otpInputs.forEach(inp => {
+            inp.value = '';
+            inp.disabled = false;
+            inp.classList.remove('otp-flip', 'otp-error', 'otp-success');
+        });
     }
 
     async function resendOTP() {
-        if (!pendingUserData) return;
-        
-        const btn = document.querySelector('#otpBox .toggle-link');
-        btn.textContent = 'Mengirim ulang...';
-        btn.style.pointerEvents = 'none';
+        if (!pendingData) return;
+        const linkBtn = document.querySelector('#otpBox .toggle-link');
+        linkBtn.textContent = 'Mengirim ulang...';
+        linkBtn.style.pointerEvents = 'none';
         
         try {
-            const payload = {
-                type: "SIGN_UP_OTP",
-                email: pendingUserData.email,
-                nama: pendingUserData.nama,
-                username: pendingUserData.username
-            };
-            
             await fetch(WEB_APP_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ type: "SIGN_UP_OTP", email: pendingData.email })
             });
-            
             setTimeout(() => {
-                showSwal('success', 'BERHASIL!', 'Kode OTP baru telah dikirim!', 'swal-border-success');
-                btn.textContent = 'Kirim Ulang';
-                btn.style.pointerEvents = 'auto';
-            }, 1500);
+                showSwal('success', 'BERHASIL!', 'Kode baru terkirim!', 'swal-border-success');
+                linkBtn.textContent = 'Kirim Ulang';
+                linkBtn.style.pointerEvents = 'auto';
+            }, 1000);
         } catch (err) {
-            showSwal('error', 'GAGAL!', 'Gagal mengirim OTP. Coba lagi.', 'swal-border-error');
-            btn.textContent = 'Kirim Ulang';
-            btn.style.pointerEvents = 'auto';
+            showSwal('error', 'GAGAL!', 'Gagal mengirim ulang.', 'swal-border-error');
+            linkBtn.textContent = 'Kirim Ulang';
+            linkBtn.style.pointerEvents = 'auto';
         }
     }
+
+    // ============================================
+    // VALIDASI USERNAME & REGISTER
+    // ============================================
+    document.getElementById('regUser').addEventListener('input', async function(e) {
+        const user = e.target.value.trim();
+        const icon = document.getElementById('userStatusIcon');
+        const fb = document.getElementById('userFeedback');
+
+        if (user.length < 3) {
+            icon.style.display = 'none'; fb.style.display = 'none'; return;
+        }
+
+        try {
+            const res = await fetch(WEB_APP_URL, {
+                method: 'POST', body: JSON.stringify({ type: "CHECK_USER", username: user })
+            });
+            const result = await res.json();
+            
+            icon.style.display = 'block'; fb.style.display = 'block';
+            if (result.userExists) {
+                icon.innerText = '✖'; icon.className = 'status-icon text-danger-custom';
+                fb.innerText = 'Username sudah ada yang pakai!'; fb.className = 'small mt-1 text-danger-custom';
+            } else {
+                icon.innerText = '✔'; icon.className = 'status-icon text-success-custom';
+                fb.innerText = 'Username tersedia!'; fb.className = 'small mt-1 text-success-custom';
+            }
+        } catch (err) {}
+    });
 
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnDaftar');
-        btn.disabled = true;
-        btn.innerText = 'Mendaftarkan...';
-
-        const nama = document.getElementById('regNama').value;
         const email = document.getElementById('regEmail').value;
-        const username = document.getElementById('regUser').value;
-        const password = document.getElementById('regPass').value;
+        const user = document.getElementById('regUser').value;
 
-        pendingUserData = { nama, email, username, password };
-
-        const payload = {
-            type: "SIGN_UP_OTP",
-            email: email,
-            nama: nama,
-            username: username
-        };
+        btn.disabled = true; btn.innerText = "Mengecek Data...";
 
         try {
-            const response = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
+            const checkRes = await fetch(WEB_APP_URL, {
+                method: 'POST', body: JSON.stringify({ type: "CHECK_USER", email: email, username: user })
             });
-            
-            const result = await response.json();
+            const check = await checkRes.json();
 
-            if (result.success) {
-                showOTPBox(email);
-                showSwal('success', 'OTP TERKIRIM!', 'Silakan cek email Anda.', 'swal-border-success');
-            } else {
-                showSwal('error', 'GAGAL!', result.message, 'swal-border-error');
-            }
-        } catch (err) {
-            showSwal('error', 'ERROR!', 'Terjadi kesalahan koneksi.', 'swal-border-error');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "DAFTAR";
-        }
-    });
-
-    document.getElementById('otpForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('btnVerify');
-        const otpCode = document.getElementById('otpCode').value.trim();
-        
-        if (otpCode.length !== 6) {
-            showSwal('warning', 'PERINGATAN!', 'Masukkan kode 6 digit!', 'swal-border-error');
-            return;
-        }
-        
-        btn.disabled = true;
-        btn.innerText = "Memverifikasi...";
-
-        const payload = {
-            type: "VERIFY_AND_SAVE",
-            email: pendingUserData.email,
-            otpInput: otpCode,
-            nama: pendingUserData.nama,
-            username: pendingUserData.username,
-            password: pendingUserData.password
-        };
-
-        try {
-            const response = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            
-            const result = await response.json();
-
-            if (result.success) {
-                // KHUSUS NYAN CAT (Success Register) - Durasi 2.5s
+            if (check.emailExists) {
                 Swal.fire({
-                    title: "PENDAFTARAN BERHASIL!",
-                    text: "Selamat Datang! Silakan Login.",
-                    width: 600,
-                    padding: "3em",
-                    color: "#716add",
-                    background: "#fff url(https://sweetalert2.github.io/images/trees.png)",
-                    backdrop: `
-                        rgba(0,0,123,0.4)
-                        url("https://sweetalert2.github.io/images/nyan-cat.gif")
-                        left top
-                        no-repeat
-                    `,
-                    showConfirmButton: false,
-                    timer: 2500
-                }).then(() => {
-                    document.getElementById('registerForm').reset();
-                    document.getElementById('otpForm').reset();
-                    document.getElementById('otpBox').classList.add('hidden');
-                    document.getElementById('loginBox').classList.remove('hidden');
-                    document.getElementById('loginText').classList.remove('hidden');
-                    pendingUserData = null;
-                });
-            } else {
-                showSwal('error', 'GAGAL!', result.message, 'swal-border-error');
-                document.getElementById('otpCode').value = '';
+                    icon: 'info', title: 'AKUN SUDAH ADA!',
+                    text: 'Email ini sudah terdaftar. Silakan login saja.',
+                    showCancelButton: true, confirmButtonText: 'Ke Halaman Login',
+                    customClass: { popup: 'swal-border-error' }
+                }).then(r => { if (r.isConfirmed) toggleForm('login'); });
+                btn.disabled = false; btn.innerText = "KIRIM OTP"; return;
             }
+
+            if (check.userExists) {
+                showSwal('error', 'GAGAL!', 'Username sudah dipakai! Gunakan yang lain.', 'swal-border-error');
+                btn.disabled = false; btn.innerText = "KIRIM OTP"; return;
+            }
+
+            pendingData = {
+                nama: document.getElementById('regNama').value,
+                email: email, username: user,
+                password: document.getElementById('regPass').value
+            };
+
+            await fetch(WEB_APP_URL, {
+                method: 'POST', body: JSON.stringify({ type: "SIGN_UP_OTP", email: email })
+            });
+
+            document.getElementById('otpEmailDisplay').innerText = email;
+            document.getElementById('registerBox').classList.add('hidden');
+            document.getElementById('otpBox').classList.remove('hidden');
+            
+            // Fokusin ke kotak OTP pertama biar user langsung ketik
+            setTimeout(() => { otpInputs[0].focus(); }, 100);
+
         } catch (err) {
-            showSwal('error', 'ERROR!', 'Gagal verifikasi database.', 'swal-border-error');
+            Swal.fire('Error', 'Gagal memproses data.', 'error');
         } finally {
-            btn.disabled = false;
-            btn.innerText = "VERIFIKASI";
+            btn.disabled = false; btn.innerText = "KIRIM OTP";
         }
     });
 
+    // ============================================
+    // LOGIN
+    // ============================================
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const userVal = document.getElementById('user').value.trim();
-        const passVal = document.getElementById('pass').value.trim();
+        const u = document.getElementById('user').value.trim();
+        const p = document.getElementById('pass').value.trim();
         const btn = document.getElementById('btnLogin');
 
-        btn.disabled = true;
-        btn.innerText = "Memverifikasi Data...";
+        btn.disabled = true; btn.innerText = "Verifikasi...";
 
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa`;
-        
         try {
-            const res = await fetch(url);
+            const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa`);
             const text = await res.text();
             const json = JSON.parse(text.substr(47).slice(0, -2));
             const rows = json.table.rows;
-            let foundAcc = rows.find(r => r.c[0] && r.c[1] && r.c[0].v == userVal && r.c[1].v == passVal);
-            if (foundAcc) {
-                localStorage.setItem('siswaLogin', userVal);
-                localStorage.setItem('namaLengkap', foundAcc.c[2] ? foundAcc.c[2].v : userVal);
-                window.location.href = 'dashboard-siswa.html';
+
+            const accFound = rows.find(r => r.c[0] && r.c[0].v == u);
+            
+            if (!accFound) {
+                Swal.fire({
+                    icon: 'warning', title: 'AKUN TIDAK DITEMUKAN!',
+                    text: 'Username ini belum terdaftar. Yuk daftar dulu!',
+                    showCancelButton: true, confirmButtonText: 'Daftar Sekarang', cancelButtonText: 'Batal',
+                    customClass: { popup: 'swal-border-error' }
+                }).then((r) => { if (r.isConfirmed) toggleForm('reg'); });
+                btn.disabled = false; btn.innerText = "LOGIN";
             } else {
-                showSwal('error', 'AKSES DITOLAK!', 'Username atau Password Salah!', 'swal-border-error');
-                btn.disabled = false;
-                btn.innerText = "LOGIN";
+                if (accFound.c[1] && accFound.c[1].v == p) {
+                    localStorage.setItem('siswaLogin', u);
+                    localStorage.setItem('namaLengkap', accFound.c[2].v);
+                    window.location.href = 'dashboard-siswa.html';
+                } else {
+                    showSwal('error', 'AKSES DITOLAK!', 'Password yang kamu masukkan salah!', 'swal-border-error');
+                    btn.disabled = false; btn.innerText = "LOGIN";
+                }
             }
         } catch (err) {
-            showSwal('error', 'DATABASE ERROR!', 'Maaf, Database sedang sibuk. coba lagi!', 'swal-border-error');
-            btn.disabled = false;
-            btn.innerText = "LOGIN";
+            showSwal('error', 'DATABASE ERROR!', 'Maaf, Database sedang sibuk. Coba lagi!', 'swal-border-error');
+            btn.disabled = false; btn.innerText = "LOGIN";
         }
     });
 </script>
-
 </body>
 </html>
