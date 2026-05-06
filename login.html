@@ -11,113 +11,295 @@
 
         * {
             font-family: "Lexend", sans-serif;
+            border-radius: 0 !important;
         }
 
         body {
-            background: #ffffff;
+            background-color: #dfe5f3;
+            background-image: 
+                linear-gradient(#c5cbe3 1px, transparent 1px),
+                linear-gradient(90deg, #c5cbe3 1px, transparent 1px);
+            background-size: 40px 40px;
             display: flex;
-            align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 60px 15px;
+            box-sizing: border-box;
+            opacity: 0;
+            animation: fadeIn 0.6s forwards;
         }
+
+        .container {
+            margin: auto;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
 
         .card {
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 15px;
+            max-width: 440px;
+            padding: 40px;
+            background: #ffffff;
+            border: 2px solid #1f2937 !important;
+            box-shadow: 8px 8px 0 #1f2937;
+            margin: auto;
+            position: relative;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0 #1f2937;
+        }
+
+        .neo-tab-list {
+            display: flex;
+            width: 100%;
+            border: 2px solid #1f2937;
+            box-shadow: 6px 6px 0 #1f2937;
+            background: #e2e8f0;
+            margin-bottom: 25px;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .neo-tab-list:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 #1f2937;
+        }
+
+        .neo-tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            font-weight: 900;
+            font-size: 15px;
+            color: #1f2937;
+            background: transparent;
             border: none;
+            outline: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .neo-tab-btn:first-child {
+            border-right: 2px solid #1f2937;
+        }
+
+        #tabLogin.active {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        #tabRegister.active {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .neo-tab-btn:hover:not(.active) {
+            background: #cbd5e1;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
+        }
+
+        .form-label {
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #1f2937 !important;
+            font-weight: 700;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #1f2937;
+            transform: translate(-2px, -2px);
+            border-color: #1f2937 !important;
+        }
+
+        .btn-primary, .btn-success {
+            border: 2px solid #1f2937 !important;
+            font-weight: 900;
+            padding: 15px;
+            box-shadow: 6px 6px 0 #1f2937;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .btn-primary { background: #3b82f6; }
+        .btn-success { background: #22c55e; }
+
+        .btn-primary:hover, .btn-success:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 #1f2937;
+            color: #fff;
+        }
+
+        .btn-primary:active, .btn-success:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0 #1f2937;
         }
 
         .toggle-link {
             cursor: pointer;
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        /* Style SweetAlert */
-        .swal2-popup {
-            border-radius: 20px !important;
-            border: 4px solid #000 !important;
-        }
-        .swal-border-error { border-color: #ff2a2a !important; }
-        .swal-border-success { border-color: #28a745 !important; }
-
-        /* Icon Validasi User */
-        .input-group-custom { position: relative; }
-        .status-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
+            color: #1f2937;
+            text-decoration: underline;
             font-weight: 900;
-            z-index: 10;
-            display: none;
         }
-        .text-success-custom { color: #28a745; }
-        .text-danger-custom { color: #ff2a2a; }
 
-        /* ==================================
-           STYLE OTP TELEGRAM / NEOBRUTALISM
-           ================================== */
-        .otp-container {
+        #neoAlertOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .neo-alert {
+            border: 2px solid #1f2937;
+            box-shadow: 4px 4px 0px #1f2937;
+            padding: 16px 20px;
+            max-width: 400px;
+            width: calc(100% - 50px);
+            position: fixed;
+            z-index: 9999;
+            display: none;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 14px;
+            background: #fff;
+            color: #1f2937;
+        }
+
+        .neo-alert.notif {
+            top: 20px;
+            left: 20px;
+            animation: slideInLeft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        @keyframes slideInLeft {
+            0%   { transform: translateX(calc(-100% - 30px)); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .neo-alert.default  { background: #dbeafe; border-color: #1f2937; }
+        .neo-alert.success  { background: #dcfce7; border-color: #1f2937; }
+        .neo-alert.warning  { background: #fef9c3; border-color: #1f2937; }
+        .neo-alert.destructive { background: #fee2e2; border-color: #1f2937; }
+
+        .neo-alert.choice {
+            background: #fff;
+            color: #1f2937;
+            padding: 28px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 6px 6px 0px #1f2937;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 440px;
+            animation: none;
+        }
+
+        .neo-alert-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 1px;
+            line-height: 1;
+        }
+
+        .neo-alert-content { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+        .neo-alert-title {
+            font-weight: 900;
+            font-size: 15px;
+            margin: 0;
+            line-height: 1.3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .neo-alert-text {
+            font-weight: 600;
+            font-size: 13px;
+            color: #374151;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .neo-alert-btns { display: flex; justify-content: flex-end; gap: 10px; width: 100%; margin-top: 22px; }
+        .btn-alert { padding: 9px 18px; border: 2px solid #1f2937; font-weight: 900; text-transform: uppercase; font-size: 13px; cursor: pointer; transition: 0.15s ease; }
+        .btn-alert-ok     { background: #3b82f6; color: #fff;    box-shadow: 3px 3px 0px #1f2937; }
+        .btn-alert-cancel { background: #fff;    color: #1f2937; box-shadow: 3px 3px 0px #1f2937; }
+        .btn-alert:hover  { transform: translate(-2px, -2px); box-shadow: 5px 5px 0px #1f2937; }
+        .btn-alert:active { transform: translate(2px,  2px);  box-shadow: 1px 1px 0px #1f2937; }
+
+        .otp-wrapper {
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .otp-group {
+            display: flex;
             gap: 8px;
-            margin-bottom: 25px;
+        }
+
+        .otp-separator {
+            font-size: 32px;
+            font-weight: 900;
+            color: #000;
         }
         
         .otp-input {
-            width: 48px;
-            height: 55px;
+            width: 50px;
+            height: 65px;
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
-            border: 3px solid #000;
-            border-radius: 10px;
+            border: 2px solid #1f2937;
             background: #fff;
-            padding: 0;
             transition: all 0.2s ease;
+            padding: 0;
+            box-shadow: 4px 4px 0 #1f2937;
+            appearance: textfield;
+            -moz-appearance: textfield;
         }
 
-        .otp-input:focus {
-            outline: none;
-            box-shadow: 4px 4px 0 #000;
-            transform: translateY(-2px);
-            border-color: #007bff;
-        }
-
-        /* Hilangkan panah di input number */
         .otp-input::-webkit-outer-spin-button,
         .otp-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Animasi FLIP saat ngecek */
-        .otp-flip {
-            animation: flipAnim 0.5s ease-in-out forwards;
-            pointer-events: none;
+        .otp-input:focus {
+            outline: none;
+            box-shadow: 5px 5px 0 #1f2937;
+            transform: translate(-2px, -2px);
         }
 
-        /* Animasi GETER (Shake) saat salah */
-        .otp-error {
-            border-color: #ff2a2a !important;
-            animation: shakeAnim 0.4s ease-in-out;
-            color: #ff2a2a;
-        }
-
-        /* Animasi SUKSES */
-        .otp-success {
-            border-color: #28a745 !important;
-            background-color: #e8f5e9;
-            color: #28a745;
-        }
+        .otp-flip { animation: flipAnim 0.5s ease-in-out forwards; pointer-events: none; }
+        .otp-error { border-color: #ef4444 !important; animation: shakeAnim 0.4s ease-in-out; color: #ef4444; }
+        .otp-success { border-color: #22c55e !important; background-color: #dcfce7; color: #22c55e; }
 
         @keyframes flipAnim {
             0% { transform: perspective(400px) rotateY(0); }
@@ -130,110 +312,138 @@
             20%, 60% { transform: translateX(-6px); }
             40%, 80% { transform: translateX(6px); }
         }
-        
-        @keyframes slideDownAlert {
-            0% { transform: translateY(-100%); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
+
+        .status-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 900;
+            z-index: 10;
+            display: none;
         }
-        .swal-slide-down { animation: slideDownAlert 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important; }
+        .text-success-custom { color: #28a745; }
+        .text-danger-custom { color: #ff2a2a; }
     </style>
 </head>
 <body>
 
+<div id="neoAlertOverlay"></div>
+<div id="neoAlertBox" class="neo-alert">
+    <div class="neo-alert-icon" id="neoAlertIcon"></div>
+    <div class="neo-alert-content">
+        <h4 class="neo-alert-title" id="neoAlertTitle">TITLE</h4>
+        <p class="neo-alert-text" id="neoAlertText"></p>
+        <div class="neo-alert-btns" id="neoAlertBtns" style="display: none;">
+            <button class="btn-alert btn-alert-cancel" id="neoBtnCancel">BATAL</button>
+            <button class="btn-alert btn-alert-ok" id="neoBtnOk">OK</button>
+        </div>
+    </div>
+</div>
+
 <div class="container d-flex justify-content-center">
     <div class="row w-100 justify-content-center">
         
-        <div class="col-md-12 text-center">
-            <img src="logolex.png" alt="Logo" style="max-width: 180px; margin-bottom: 20px;">
+        <div class="col-md-12 text-center mb-4">
+            <img src="logolex.png" alt="Logo" style="max-width: 170px; margin-bottom: 15px;">
             <div id="titleArea">
-                <h2 id="mainTitle" class="fw-bold">Login Akun</h2>
-                <p id="mainSub" class="text-muted">Silakan masuk ke akun Anda</p>
+                <h1 id="mainTitle" style="font-weight: 900; letter-spacing: -2px; text-transform: uppercase; font-size: 50px; margin-bottom: 0;">LEXACORE</h1>
+                <p id="mainSub" class="fw-bold text-dark opacity-75">Silakan masuk ke akun Anda</p>
             </div>
         </div>
 
         <div class="col-md-12 d-flex justify-content-center">
             
-            <!-- FORM LOGIN -->
-            <div id="loginBox" class="card shadow-sm border">
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Username</label>
-                        <input type="text" id="user" class="form-control" placeholder="Username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Password</label>
-                        <input type="password" id="pass" class="form-control" placeholder="Password" required>
-                    </div>
-                    <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-bold">
-                        LOGIN
-                    </button>
-                </form>
-                <p class="text-center mt-3 small">
-                    Belum punya akun? <span class="toggle-link" onclick="toggleForm('reg')">Daftar di sini</span>
-                </p>
-            </div>
+            <div id="formContainer" style="width: 100%; max-width: 440px;">
+                <div class="neo-tab-list" id="tabsList">
+                    <button type="button" class="neo-tab-btn active" id="tabLogin" onclick="toggleForm('login')">Masuk</button>
+                    <button type="button" class="neo-tab-btn" id="tabRegister" onclick="toggleForm('register')">Daftar</button>
+                </div>
 
-            <!-- FORM DAFTAR -->
-            <div id="registerBox" class="card shadow-sm border hidden">
-                <form id="registerForm">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Nama Lengkap</label>
-                        <input type="text" id="regNama" class="form-control" placeholder="Nama Lengkap" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Email</label>
-                        <input type="email" id="regEmail" class="form-control" placeholder="email@sekolah.com" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Buat Username</label>
-                        <div class="input-group-custom">
-                            <input type="text" id="regUser" class="form-control" placeholder="Username unik" required>
-                            <!-- ICON VALIDASI -->
-                            <span id="userStatusIcon" class="status-icon"></span>
-                        </div>
-                        <div id="userFeedback" class="small mt-1" style="display:none;"></div>
-                    </div>
-                    
+                <div id="loginBox" class="card" style="margin: 0;">
                     <div class="mb-4">
-                        <label class="form-label small fw-bold">Buat Password</label>
-                        <input type="password" id="regPass" class="form-control" placeholder="Minimal 6 karakter" required>
+                        <h3 style="font-weight: 900; margin-bottom: 5px; font-size: 24px; text-transform: uppercase;">Masuk</h3>
+                        <p style="font-size: 14px; color: #4b5563; font-weight: 600; margin-bottom: 0;">Masukkan username dan password Anda.</p>
+                    </div>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="user" class="form-control" placeholder="Masukkan Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="pass" class="form-control" placeholder="Masukkan Password" required>
+                        </div>
+                        <button type="submit" id="btnLogin" class="btn btn-primary mt-2">
+                            MASUK
+                        </button>
+                    </form>
+                </div>
+
+                <div id="registerBox" class="card hidden" style="margin: 0;">
+                    <div class="mb-4">
+                        <h3 style="font-weight: 900; margin-bottom: 5px; font-size: 24px; text-transform: uppercase;">Daftar Akun</h3>
+                        <p style="font-size: 14px; color: #4b5563; font-weight: 600; margin-bottom: 0;">Isi data di bawah untuk membuat akun baru.</p>
+                    </div>
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" id="regNama" class="form-control" placeholder="Nama Lengkap Anda" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email Sekolah</label>
+                            <input type="email" id="regEmail" class="form-control" placeholder="email@sekolah.com" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Buat Username</label>
+                            <div style="position: relative;">
+                                <input type="text" id="regUser" class="form-control" placeholder="Username unik" required>
+                                <span id="userStatusIcon" class="status-icon"></span>
+                            </div>
+                            <div id="userFeedback" class="small mt-1 fw-bold" style="display:none;"></div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Buat Password</label>
+                            <input type="password" id="regPass" class="form-control" placeholder="Minimal 6 karakter" required>
+                        </div>
+                        
+                        <button type="submit" id="btnDaftar" class="btn btn-success mt-2">
+                            DAFTAR
+                        </button>
+                    </form>
+                </div>
+
+                <div id="otpBox" class="card hidden" style="margin: 0;">
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold" style="text-transform: uppercase;">Verifikasi Email</h4>
+                        <p class="text-dark small fw-bold mb-0">Kode 6 angka dikirim ke:</p>
+                        <p class="small fw-bold text-primary" id="otpEmailDisplay"></p>
                     </div>
                     
-                    <button type="submit" id="btnDaftar" class="btn btn-success w-100 fw-bold">
-                        KIRIM OTP
-                    </button>
-                </form>
-                <p class="text-center mt-3 small">
-                    Sudah punya akun? <span class="toggle-link" onclick="toggleForm('login')">Kembali Login</span>
-                </p>
-            </div>
-
-            <!-- BOX OTP TELEGRAM STYLE -->
-            <div id="otpBox" class="card shadow-sm border hidden">
-                <div class="text-center mb-4">
-                    <h4 class="fw-bold">Verifikasi Email</h4>
-                    <p class="text-muted small mb-0">Kode 6 angka telah dikirim ke:</p>
-                    <p class="small fw-bold text-dark" id="otpEmailDisplay"></p>
+                    <div class="otp-wrapper" id="otpContainer">
+                        <div class="otp-group">
+                            <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                            <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                            <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                        </div>
+                        <div class="otp-separator">·</div>
+                        <div class="otp-group">
+                            <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                            <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                            <input type="number" class="otp-input" maxlength="1" pattern="\d*">
+                        </div>
+                    </div>
+                    
+                    <p class="text-center mt-3 small fw-bold">
+                        Tidak terima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
+                    </p>
+                    <p class="text-center mt-2 small">
+                        <span class="toggle-link text-danger" onclick="cancelOTP()">Batal Daftar</span>
+                    </p>
                 </div>
-                
-                <!-- Kotak OTP -->
-                <div class="otp-container" id="otpContainer">
-                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
-                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
-                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
-                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
-                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
-                    <input type="number" class="otp-input" maxlength="1" pattern="\d*">
-                </div>
-                
-                <p class="text-center mt-3 small mb-1">
-                    Tidak menerima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
-                </p>
-                <p class="text-center small">
-                    <span class="toggle-link text-danger" onclick="cancelOTP()">Batal Daftar</span>
-                </p>
             </div>
 
         </div>
@@ -246,68 +456,103 @@
 
     let pendingData = null;
 
+    function showSwal(icon, title, text) {
+        const isChoice = title.includes("TIDAK DITEMUKAN") || title.includes("AKUN SUDAH ADA");
+
+        let variant, emoji;
+        if (icon === 'error') {
+            variant = 'destructive'; emoji = '⛔';
+        } else if (icon === 'warning') {
+            variant = 'warning'; emoji = '⚠️';
+        } else if (icon === 'success') {
+            variant = 'success'; emoji = '✅';
+        } else {
+            variant = 'default'; emoji = 'ℹ️';
+        }
+
+        return new Promise((resolve) => {
+            const box = document.getElementById('neoAlertBox');
+            const overlay = document.getElementById('neoAlertOverlay');
+            const iconEl = document.getElementById('neoAlertIcon');
+            const btns = document.getElementById('neoAlertBtns');
+
+            document.getElementById('neoAlertTitle').innerText = title;
+            document.getElementById('neoAlertText').innerText = text;
+            iconEl.innerHTML = emoji;
+
+            box.className = `neo-alert ${isChoice ? 'choice' : 'notif'} ${variant}`;
+            btns.style.display = isChoice ? 'flex' : 'none';
+            overlay.style.display = isChoice ? 'flex' : 'none';
+            box.style.display = 'flex';
+
+            document.getElementById('neoBtnOk').onclick = () => {
+                box.style.display = 'none';
+                overlay.style.display = 'none';
+                resolve({ isConfirmed: true });
+            };
+
+            document.getElementById('neoBtnCancel').onclick = () => {
+                box.style.display = 'none';
+                overlay.style.display = 'none';
+                resolve({ isConfirmed: false });
+            };
+
+            if (!isChoice) {
+                setTimeout(() => { box.style.display = 'none'; }, 3500);
+            }
+        });
+    }
+
     function toggleForm(type) {
         const login = document.getElementById('loginBox');
         const reg = document.getElementById('registerBox');
         const otp = document.getElementById('otpBox');
-        const title = document.getElementById('mainTitle');
         const sub = document.getElementById('mainSub');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const tabsList = document.getElementById('tabsList');
 
         login.classList.add('hidden');
         reg.classList.add('hidden');
         otp.classList.add('hidden');
+        
+        if(tabLogin) tabLogin.classList.remove('active');
+        if(tabRegister) tabRegister.classList.remove('active');
+        if(tabsList) tabsList.classList.remove('hidden');
 
         if (type === 'login') {
             login.classList.remove('hidden');
-            title.innerText = "Login Akun";
+            if(tabLogin) tabLogin.classList.add('active');
             sub.innerText = "Silakan masuk ke akun Anda";
-        } else {
+        } else if (type === 'reg' || type === 'register') {
             reg.classList.remove('hidden');
-            title.innerText = "Daftar Akun";
+            if(tabRegister) tabRegister.classList.add('active');
             sub.innerText = "Silakan buat akun baru";
+        } else if (type === 'otp') {
+            otp.classList.remove('hidden');
+            if(tabsList) tabsList.classList.add('hidden');
         }
     }
 
-    function showSwal(icon, title, text, borderClass) {
-        Swal.fire({
-            position: 'top',
-            icon: icon,
-            title: title,
-            text: text,
-            showConfirmButton: false,
-            timer: 1500,
-            backdrop: `rgba(0,0,0,0.4)`,
-            showClass: { popup: 'swal-slide-down' },
-            customClass: { popup: borderClass }
-        });
-    }
-
-    // ============================================
-    // LOGIKA OTP BOX (TELEGRAM STYLE)
-    // ============================================
     const otpInputs = document.querySelectorAll('.otp-input');
     
     otpInputs.forEach((input, index) => {
-        // Pindah otomatis ke kotak selanjutnya
         input.addEventListener('input', (e) => {
-            // Biar ga bisa input lebih dari 1 angka
             if (e.target.value.length > 1) {
                 e.target.value = e.target.value.slice(0, 1);
             }
             if (e.target.value !== '' && index < otpInputs.length - 1) {
                 otpInputs[index + 1].focus();
             }
-            checkAutoSubmit(); // Cek apakah udah full 6 angka
+            checkAutoSubmit();
         });
 
-        // Hapus pake backspace, lompat ke kiri
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
                 otpInputs[index - 1].focus();
             }
         });
 
-        // Support fitur paste (tempel 6 angka sekaligus)
         input.addEventListener('paste', (e) => {
             e.preventDefault();
             const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6).split('');
@@ -325,19 +570,12 @@
     async function checkAutoSubmit() {
         const code = Array.from(otpInputs).map(inp => inp.value).join('');
         if (code.length === 6) {
-            // 1. Kunci semua input dulu
             otpInputs.forEach(inp => inp.disabled = true);
-
-            // 2. Mainkan animasi Flip satu-satu kaya gelombang (mikir)
             for (let i = 0; i < otpInputs.length; i++) {
                 otpInputs[i].classList.add('otp-flip');
-                await new Promise(r => setTimeout(r, 100)); // Delay antar kotak 100ms
+                await new Promise(r => setTimeout(r, 100));
             }
-
-            // Tunggu animasi flip selesai
             await new Promise(r => setTimeout(r, 500)); 
-
-            // 3. Verifikasi ke Database
             verifyOTPServer(code);
         }
     }
@@ -353,14 +591,10 @@
                 })
             });
             const result = await res.json();
-
-            // MATIKAN ANIMASI FLIP DULU
             otpInputs.forEach(inp => inp.classList.remove('otp-flip'));
 
             if (result.success) {
-                // JIKA BENAR: Kotak Hijau, lalu Nyan Cat
                 otpInputs.forEach(inp => inp.classList.add('otp-success'));
-                
                 setTimeout(() => {
                     Swal.fire({
                         title: "PENDAFTARAN BERHASIL!",
@@ -374,26 +608,21 @@
                         timer: 2500
                     }).then(() => location.reload());
                 }, 500);
-
             } else {
-                // JIKA SALAH: Geterin kotaknya, merahin, terus hapus isinya
                 otpInputs.forEach(inp => {
                     inp.classList.add('otp-error');
-                    inp.disabled = false; // Buka kunci lagi
+                    inp.disabled = false;
                 });
-                
-                // Hilangkan class merah setelah animasi geter selesai (400ms)
                 setTimeout(() => {
                     otpInputs.forEach(inp => {
                         inp.classList.remove('otp-error');
-                        inp.value = ''; // Hapus angkanya
+                        inp.value = '';
                     });
-                    otpInputs[0].focus(); // Fokus lagi ke kotak pertama
+                    otpInputs[0].focus();
                 }, 500);
             }
-
         } catch (err) {
-            Swal.fire('Error', 'Gagal memverifikasi', 'error');
+            showSwal('error', 'Gagal memverifikasi', 'Terjadi kesalahan sistem.');
             otpInputs.forEach(inp => {
                 inp.disabled = false;
                 inp.classList.remove('otp-flip');
@@ -402,22 +631,15 @@
     }
 
     function cancelOTP() {
-        document.getElementById('otpBox').classList.add('hidden');
-        document.getElementById('registerBox').classList.remove('hidden');
-        document.getElementById('registerText').classList.remove('hidden');
         document.getElementById('registerForm').reset();
         pendingData = null;
-        
-        // Reset validasi Username
         document.getElementById('userStatusIcon').style.display = 'none';
         document.getElementById('userFeedback').style.display = 'none';
-        
-        // Reset Kotak OTP
         otpInputs.forEach(inp => {
-            inp.value = '';
-            inp.disabled = false;
+            inp.value = ''; inp.disabled = false;
             inp.classList.remove('otp-flip', 'otp-error', 'otp-success');
         });
+        toggleForm('reg');
     }
 
     async function resendOTP() {
@@ -425,50 +647,42 @@
         const linkBtn = document.querySelector('#otpBox .toggle-link');
         linkBtn.textContent = 'Mengirim ulang...';
         linkBtn.style.pointerEvents = 'none';
-        
         try {
             await fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify({ type: "SIGN_UP_OTP", email: pendingData.email })
             });
             setTimeout(() => {
-                showSwal('success', 'BERHASIL!', 'Kode baru terkirim!', 'swal-border-success');
+                showSwal('success', 'BERHASIL!', 'Kode baru terkirim!');
                 linkBtn.textContent = 'Kirim Ulang';
                 linkBtn.style.pointerEvents = 'auto';
             }, 1000);
         } catch (err) {
-            showSwal('error', 'GAGAL!', 'Gagal mengirim ulang.', 'swal-border-error');
+            showSwal('error', 'GAGAL!', 'Gagal mengirim ulang.');
             linkBtn.textContent = 'Kirim Ulang';
             linkBtn.style.pointerEvents = 'auto';
         }
     }
 
-    // ============================================
-    // VALIDASI USERNAME & REGISTER
-    // ============================================
     document.getElementById('regUser').addEventListener('input', async function(e) {
         const user = e.target.value.trim();
         const icon = document.getElementById('userStatusIcon');
         const fb = document.getElementById('userFeedback');
-
         if (user.length < 3) {
             icon.style.display = 'none'; fb.style.display = 'none'; return;
         }
-
         try {
             const res = await fetch(WEB_APP_URL, {
                 method: 'POST', body: JSON.stringify({ type: "CHECK_USER", username: user })
             });
             const result = await res.json();
-            
             icon.style.display = 'block'; fb.style.display = 'block';
             if (result.userExists) {
                 icon.innerText = '✖'; icon.className = 'status-icon text-danger-custom';
-                fb.innerText = 'Username sudah ada yang pakai!'; fb.className = 'small mt-1 text-danger-custom';
+                fb.innerText = 'Username sudah ada!'; fb.className = 'small mt-1 text-danger-custom fw-bold';
             } else {
                 icon.innerText = '✔'; icon.className = 'status-icon text-success-custom';
-                fb.innerText = 'Username tersedia!'; fb.className = 'small mt-1 text-success-custom';
+                fb.innerText = 'Username tersedia!'; fb.className = 'small mt-1 text-success-custom fw-bold';
             }
         } catch (err) {}
     });
@@ -478,94 +692,68 @@
         const btn = document.getElementById('btnDaftar');
         const email = document.getElementById('regEmail').value;
         const user = document.getElementById('regUser').value;
-
         btn.disabled = true; btn.innerText = "Mengecek Data...";
-
         try {
             const checkRes = await fetch(WEB_APP_URL, {
                 method: 'POST', body: JSON.stringify({ type: "CHECK_USER", email: email, username: user })
             });
             const check = await checkRes.json();
-
             if (check.emailExists) {
-                Swal.fire({
-                    icon: 'info', title: 'AKUN SUDAH ADA!',
-                    text: 'Email ini sudah terdaftar. Silakan login saja.',
-                    showCancelButton: true, confirmButtonText: 'Ke Halaman Login',
-                    customClass: { popup: 'swal-border-error' }
-                }).then(r => { if (r.isConfirmed) toggleForm('login'); });
-                btn.disabled = false; btn.innerText = "KIRIM OTP"; return;
+                const res = await showSwal('info', 'AKUN SUDAH ADA!', 'Email ini sudah terdaftar. Silakan login.');
+                if (res.isConfirmed) toggleForm('login');
+                btn.disabled = false; btn.innerText = "DAFTAR"; return;
             }
-
             if (check.userExists) {
-                showSwal('error', 'GAGAL!', 'Username sudah dipakai! Gunakan yang lain.', 'swal-border-error');
-                btn.disabled = false; btn.innerText = "KIRIM OTP"; return;
+                showSwal('error', 'GAGAL!', 'Username sudah dipakai!');
+                btn.disabled = false; btn.innerText = "DAFTAR"; return;
             }
-
             pendingData = {
                 nama: document.getElementById('regNama').value,
                 email: email, username: user,
                 password: document.getElementById('regPass').value
             };
-
             await fetch(WEB_APP_URL, {
                 method: 'POST', body: JSON.stringify({ type: "SIGN_UP_OTP", email: email })
             });
-
             document.getElementById('otpEmailDisplay').innerText = email;
-            document.getElementById('registerBox').classList.add('hidden');
-            document.getElementById('otpBox').classList.remove('hidden');
-            
-            // Fokusin ke kotak OTP pertama biar user langsung ketik
+            toggleForm('otp');
             setTimeout(() => { otpInputs[0].focus(); }, 100);
-
         } catch (err) {
-            Swal.fire('Error', 'Gagal memproses data.', 'error');
+            showSwal('error', 'Gagal memproses data.', 'DATABASE ERROR.');
         } finally {
-            btn.disabled = false; btn.innerText = "KIRIM OTP";
+            btn.disabled = false; btn.innerText = "DAFTAR";
         }
     });
 
-    // ============================================
-    // LOGIN
-    // ============================================
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const u = document.getElementById('user').value.trim();
         const p = document.getElementById('pass').value.trim();
         const btn = document.getElementById('btnLogin');
-
         btn.disabled = true; btn.innerText = "Verifikasi...";
-
         try {
             const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa`);
             const text = await res.text();
             const json = JSON.parse(text.substr(47).slice(0, -2));
             const rows = json.table.rows;
-
             const accFound = rows.find(r => r.c[0] && r.c[0].v == u);
-            
             if (!accFound) {
-                Swal.fire({
-                    icon: 'warning', title: 'AKUN TIDAK DITEMUKAN!',
-                    text: 'Username ini belum terdaftar. Yuk daftar dulu!',
-                    showCancelButton: true, confirmButtonText: 'Daftar Sekarang', cancelButtonText: 'Batal',
-                    customClass: { popup: 'swal-border-error' }
-                }).then((r) => { if (r.isConfirmed) toggleForm('reg'); });
-                btn.disabled = false; btn.innerText = "LOGIN";
+                const res = await showSwal('warning', 'AKUN TIDAK DITEMUKAN!', 'Username belum terdaftar.');
+                if (res.isConfirmed) toggleForm('reg');
+                btn.disabled = false; btn.innerText = "MASUK";
             } else {
                 if (accFound.c[1] && accFound.c[1].v == p) {
                     localStorage.setItem('siswaLogin', u);
                     localStorage.setItem('namaLengkap', accFound.c[2].v);
                     window.location.href = 'dashboard-siswa.html';
                 } else {
-                    showSwal('error', 'AKSES DITOLAK!', 'Password yang kamu masukkan salah!', 'swal-border-error');
-                    btn.disabled = false; btn.innerText = "LOGIN";
+                    showSwal('error', 'AKSES DITOLAK!', 'Password yang Anda masukkan salah.');
+                    btn.disabled = false; btn.innerText = "MASUK";
                 }
             }
         } catch (err) {
-            showSwal('error', 'DATABASE ERROR!', 'Maaf, Database sedang sibuk. Coba lagi!', 'swal-border-error');
-            btn.disabled = false; btn.innerText = "LOGIN";
+            showSwal('error', 'DATABASE ERROR!', 'Gagal terhubung ke server.');
+            btn.disabled = false; btn.innerText = "MASUK";
         }
     });
 </script>
