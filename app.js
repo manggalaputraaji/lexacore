@@ -1,6 +1,4 @@
-/* ============================================
-   SHARED UTILITIES
-   ============================================ */
+
 function parseDate(dStr) {
   if (!dStr) return null;
   if (dStr instanceof Date) return dStr;
@@ -36,9 +34,7 @@ function formatDate(dateObj) {
   return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
 }
 
-/* ============================================
-   INDEX PAGE (index.html)
-   ============================================ */
+
 function initIndexPage() {
     window.addEventListener('scroll', () => {
         const section = document.getElementById('mainSection');
@@ -63,9 +59,7 @@ function initIndexPage() {
     });
 }
 
-/* ============================================
-   LOGIN PAGE (login.html)
-   ============================================ */
+
 function initLoginPage() {
     const SHEET_ID = '19aDh5DCRpV0FJzxa7Yw6teAhnRwHOCP-zS3g8-YA_sg';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyPdkSJW5FTU24YCbOF1jguwpKnA_gGVWy8Iw8yMYLGP-GIrecvZglQWgxiQVszs3NM/exec';
@@ -374,9 +368,7 @@ function initLoginPage() {
     });
 }
 
-/* ============================================
-   DASHBOARD SISWA PAGE (dashboard-siswa.html)
-   ============================================ */
+
 function initDashboardPage() {
     const SHEET_ID = '19aDh5DCRpV0FJzxa7Yw6teAhnRwHOCP-zS3g8-YA_sg';
     const user = localStorage.getItem('siswaLogin');
@@ -608,9 +600,7 @@ function initDashboardPage() {
     window.logout = function() { localStorage.clear(); window.location.href = 'login.html'; };
 }
 
-/* ============================================
-   AUTO-INIT: detect page and run init
-   ============================================ */
+
 document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     if (body.classList.contains('page-index')) {
