@@ -5,110 +5,9 @@
 <meta charset="UTF-8">
 <title>LEXACORE Website</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    body, html { margin: 0; padding: 0; background-color: white; font-family: sans-serif; }
-
-    .hero-section { height: 200vh; position: relative; }
-
-    .sticky-container {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    .bg-img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        background: url('bg.jpg') center center / cover no-repeat fixed;
-    }
-
-    .white-overlay {
-        position: absolute;
-        inset: 0;
-        background: white;
-        z-index: 5;
-        opacity: 0;
-        transition: opacity 0.6s ease-in-out;
-    }
-
-    .text-container {
-        position: relative;
-        z-index: 10;
-        margin-bottom: 30px;
-        transition: transform 0.6s ease-in-out;
-    }
-
-    .text-style {
-        font-size: 15vw;
-        font-weight: 900;
-        font-family: 'Arial Black', sans-serif;
-        margin: 0;
-        color: white;
-        text-transform: uppercase;
-    }
-
-    .text-masked {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-attachment: fixed;
-        background-position: center center;
-        background-size: cover;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: black;
-        opacity: 0;
-        transition: opacity 0.6s ease-in-out;
-    }
-
-    .content {
-        position: relative;
-        z-index: 20;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        opacity: 0;
-        transform: translateY(40px);
-        transition: all 0.8s ease-in-out;
-        margin-top: -50px;
-    }
-
-    .logo-img {
-        max-width: 260px;
-        margin-bottom: 1.5rem;
-    }
-
-    .enter-link {
-        font-size: 2.2rem;
-        font-weight: bold;
-        color: black;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .is-scrolled .white-overlay     { opacity: 1; }
-    .is-scrolled .text-container    { transform: translateY(-80px); }
-    .is-scrolled .text-masked       { opacity: 1; }
-    .is-scrolled .content           { opacity: 1; transform: translateY(0); }
-
-    .is-scrolled .enter-link:hover {
-        color: white;
-        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    }
-</style>
+<link rel="stylesheet" href="app.css">
 </head>
-<body>
+<body class="page-index">
 
 <div class="hero-section" id="mainSection">
     <div class="sticky-container">
@@ -127,29 +26,6 @@
     </div>
 </div>
 
-<script>
-    window.addEventListener('scroll', () => {
-        const section = document.getElementById('mainSection');
-        if (window.scrollY > window.innerHeight * 0.2) {
-            section.classList.add('is-scrolled');
-        } else {
-            section.classList.remove('is-scrolled');
-        }
-    });
-
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const startTime = performance.now();
-            function animate(time) {
-                const p = Math.min((time - startTime) / 200, 1);
-                window.scrollTo(0, scrollHeight * (p * (2 - p)));
-                if (p < 1) requestAnimationFrame(animate);
-            }
-            requestAnimationFrame(animate);
-        }, 800);
-    });
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
