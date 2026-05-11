@@ -133,6 +133,69 @@ body.page-login {
     animation: fadeIn 0.6s forwards;
 }
 
+.btn-admin-corner {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: #facc15;
+    color: #1f2937;
+    border: 2px solid #1f2937;
+    font-weight: 900;
+    font-size: 13px;
+    padding: 10px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 4px 4px 0 #000;
+    transition: all 0.2s ease;
+}
+
+.btn-admin-corner:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
+    background: #3b82f6;
+    color: #fff;
+}
+
+.btn-admin-corner:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #000;
+}
+
+.btn-profil-corner {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    background: #fff;
+    color: #1f2937;
+    border: 2px solid #1f2937;
+    font-weight: 900;
+    font-size: 13px;
+    padding: 10px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 4px 4px 0 #000;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-profil-corner:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
+    background: #1f2937;
+    color: #fff;
+}
+
+.btn-profil-corner:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #000;
+}
+
 body.page-login .container {
     margin: auto;
 }
@@ -673,3 +736,50 @@ footer {
     will-change: opacity;
     animation: tabFadeIn 0.5s ease both;
 }
+
+
+.profil-portrait {
+    width: 120px;
+    height: 160px;
+    object-fit: cover;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    margin: 0 auto 15px;
+    display: block;
+}
+
+.profil-social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 2px solid #000;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000;
+    box-shadow: 4px 4px 0 #000;
+    transition: all 0.15s ease;
+}
+
+.profil-social-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
+    color: #fff;
+}
+
+.profil-social-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #000;
+}
+
+.social-ig { background: #fce7f3; }
+.social-ig:hover { background: #e1306c; }
+
+.social-wa { background: #dcfce7; }
+.social-wa:hover { background: #25d366; }
+
+.social-email { background: #dbeafe; }
+.social-email:hover { background: #3b82f6; }

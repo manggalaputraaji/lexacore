@@ -1,4 +1,8 @@
 
+function normalizeSpace(str) {
+  return str == null ? '' : String(str).replace(/\s+/g, ' ').trim();
+}
+
 function parseDate(dStr) {
   if (!dStr) return null;
   if (dStr instanceof Date) return dStr;
@@ -62,7 +66,7 @@ function initIndexPage() {
 
 function initLoginPage() {
     const SHEET_ID = '19aDh5DCRpV0FJzxa7Yw6teAhnRwHOCP-zS3g8-YA_sg';
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyPdkSJW5FTU24YCbOF1jguwpKnA_gGVWy8Iw8yMYLGP-GIrecvZglQWgxiQVszs3NM/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxwVV9yK9Kb4z2ayGbhW4k_UXtkcdhMTClxlyloBCTQJHn5mgV7hkkPY1brrbjDgz_V/exec';
 
     let pendingData = null;
 
@@ -342,19 +346,19 @@ function initLoginPage() {
         const btn = document.getElementById('btnLogin');
         btn.disabled = true; btn.innerText = "Verifikasi...";
         try {
-            const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa`);
+            const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=UserSiswa&headers=1`);
             const text = await res.text();
             const json = JSON.parse(text.substr(47).slice(0, -2));
             const rows = json.table.rows;
-            const accFound = rows.find(r => r.c[0] && r.c[0].v == u);
+            const accFound = rows.find(r => r.c[0] && normalizeSpace(r.c[0].v) == normalizeSpace(u));
             if (!accFound) {
                 const res = await showSwal('warning', 'AKUN TIDAK DITEMUKAN!', 'Username belum terdaftar.');
                 if (res.isConfirmed) toggleForm('reg');
                 btn.disabled = false; btn.innerText = "MASUK";
             } else {
-                if (accFound.c[1] && accFound.c[1].v == p) {
-                    localStorage.setItem('siswaLogin', u);
-                    localStorage.setItem('namaLengkap', accFound.c[2].v);
+                if (accFound.c[1] && normalizeSpace(accFound.c[1].v) == normalizeSpace(p)) {
+                    localStorage.setItem('siswaLogin', normalizeSpace(u));
+                    localStorage.setItem('namaLengkap', normalizeSpace(accFound.c[2].v));
                     window.location.href = 'dashboard-siswa.html';
                 } else {
                     showSwal('error', 'AKSES DITOLAK!', 'Password yang Anda masukkan salah.');
@@ -412,14 +416,21 @@ function initDashboardPage() {
     };
 
     async function muatDataTabel() {
-        const queryText = `SELECT * WHERE LOWER(A) CONTAINS '${user.toLowerCase()}' OR LOWER(A) CONTAINS '${namaLengkap.toLowerCase()}'`;
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Data%20Pelanggar&tq=${encodeURIComponent(queryText)}`;
+        const stripAll = s => String(s).replace(/\s+/g, '').toLowerCase();
+        const matchUser = stripAll(user);
+        const matchName = stripAll(namaLengkap);
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Data%20Pelanggar&headers=1`;
 
         try {
             const res      = await fetch(url);
             const text     = await res.text();
             const jsonData = JSON.parse(text.substring(47).slice(0, -2));
-            const rows     = jsonData.table.rows;
+            const allRows  = jsonData.table.rows || [];
+            const rows     = allRows.filter(r => {
+                if (!r.c[0] || !r.c[0].v) return false;
+                const nama = stripAll(r.c[0].v);
+                return nama.includes(matchUser) || nama.includes(matchName) || matchUser.includes(nama) || matchName.includes(nama);
+            });
 
             document.getElementById('loadingMsg').style.display    = 'none';
             document.getElementById('summarySection').style.display = 'flex';

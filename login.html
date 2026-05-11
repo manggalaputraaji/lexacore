@@ -10,6 +10,13 @@
 </head>
 <body class="page-login">
 
+<a href="https://siptatas.biz.id/" class="btn-admin-corner" target="_blank">Sebagai Admin</a>
+
+<a href="profile.html" class="btn-profil-corner">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    Profil Developer
+</a>
+
 <div id="neoAlertOverlay"></div>
 <div id="neoAlertBox" class="neo-alert">
     <div class="neo-alert-icon" id="neoAlertIcon"></div>
@@ -101,7 +108,7 @@
                 <div id="otpBox" class="card hidden" style="margin: 0;">
                     <div class="text-center mb-4">
                         <h4 class="fw-bold" style="text-transform: uppercase;">Verifikasi Email</h4>
-                        <p class="text-dark small fw-bold mb-0">Kode 6 angka dikirim ke:</p>
+                        <p class="text-dark small fw-bold mb-0">Kode OTP telah dikirim ke:</p>
                         <p class="small fw-bold text-primary" id="otpEmailDisplay"></p>
                     </div>
                     
@@ -120,10 +127,10 @@
                     </div>
                     
                     <p class="text-center mt-3 small fw-bold">
-                        Tidak terima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
+                        Belum menerima kode? <span class="toggle-link" onclick="resendOTP()">Kirim Ulang</span>
                     </p>
                     <p class="text-center mt-2 small">
-                        <span class="toggle-link text-danger" onclick="cancelOTP()">Batal Daftar</span>
+                        <span class="toggle-link text-danger" onclick="cancelOTP()">Kembali</span>
                     </p>
                 </div>
             </div>
