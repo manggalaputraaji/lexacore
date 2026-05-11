@@ -8,7 +8,7 @@ function parseDate(dStr) {
   if (dStr instanceof Date) return dStr;
   const s = String(dStr).replace(/,/g, '');
   const serialNum = parseFloat(s);
-  if (!isNaN(serialNum) && serialNum > 1000 && serialNum < 100000) {
+  if (!isNaN(serialNum) && serialNum > 1000 && serialNum < 100000 && /^\d+(\.\d+)?$/.test(s)) {
     const excelEpoch = new Date(1899, 11, 30);
     const days = Math.floor(serialNum);
     const fracDay = serialNum - days;
@@ -66,7 +66,7 @@ function initIndexPage() {
 
 function initLoginPage() {
     const SHEET_ID = '19aDh5DCRpV0FJzxa7Yw6teAhnRwHOCP-zS3g8-YA_sg';
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxwVV9yK9Kb4z2ayGbhW4k_UXtkcdhMTClxlyloBCTQJHn5mgV7hkkPY1brrbjDgz_V/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyv5VTOhdz3CptEYZgheLY9Ha7S7cfsAhiKQGn7HFYpGRc40oUWNMemSuLjcC7IA8yr/exec';
 
     let pendingData = null;
 
